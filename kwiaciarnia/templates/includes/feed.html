@@ -1,3 +1,9 @@
 <div>
-    
+    {% for post in all_posts %}
+        <small>{{post.added}}</small>
+        <h3>{{post.title}}</h3>
+        <br>
+        {{post.body}}
+        <hr>
+    {% endfor %}
 </div>

@@ -11,7 +11,8 @@ def stworz():
 
 @app.route("/")
 def home():
-    return render_template('index.html')
+    all_posts = Posts.query.all()
+    return render_template('index.html', all_posts=all_posts)
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():

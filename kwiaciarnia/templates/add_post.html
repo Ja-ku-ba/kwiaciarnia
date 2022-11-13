@@ -7,7 +7,8 @@
     <form method="post" >
         {{ add_post.hidden_tag() }}
         {% for field in add_post %}
-        {{field.label()}}{{field}}
+        {{field.label()}}
+        {{field}}
         <br>
         {% endfor %}
 </div>
