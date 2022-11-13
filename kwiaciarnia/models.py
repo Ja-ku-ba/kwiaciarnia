@@ -1,7 +1,9 @@
-from kwiaciarnia import db
+from flask_sqlalchemy import SQLAlchemy
 import datetime
 
-class Post(db.Model):
+db = SQLAlchemy()
+
+class Posts(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     body = db.Column(db.Text())
     added = db.Column(db.DateTime(), default=datetime.datetime.now())
