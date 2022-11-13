@@ -5,6 +5,7 @@ db = SQLAlchemy()
 
 class Posts(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column(db.String(length=128))
     body = db.Column(db.Text())
     added = db.Column(db.DateTime(), default=datetime.datetime.now())
     likes = db.Column(db.Integer(), default=0)
