@@ -16,10 +16,17 @@ def home():
     return render_template('index.html', all_posts=all_posts)
 
 @app.route('/like_result', methods=['GET', 'POST'])
+@login_required
 def like_result():
+    liked_post = request.form.get('like_button')
+    add_like_post = Posts.query.filter_by(id=liked_post).first()
     if request.method == "POST":
-        return 'cudo'
+        return str(liked_post)
     return "zaskoczyło"
+
+# bought_item = request.form.get('buy_item')
+# bought_item_object = Item.query.filter_by(name = bought_item).first()
+
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():

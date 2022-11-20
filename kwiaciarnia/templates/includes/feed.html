@@ -1,12 +1,13 @@
 <div>
     {% for post in all_posts %}
         <small>{{post.added}}</small>
-        <h3>{{post.title}}</h3>
+        <h3>{{post.title}}  {{post.id}}</h3>
         <br>
         {{post.body}}
         <div class="buttons">
             <form action="{{ url_for('like_result') }}" method="post">
-                <input type="submit" value="{{ post.id }}" name="like_button">
+                <input type="hidden" name="like_button" value="{{post.id}}">
+                <input type="submit" value="Polub" placeholder="Like">
             </form>
             <form action="/result" method="post">
                 <input type="button" value="Dislike" name="dislike_button">
