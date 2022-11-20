@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Wyimaginowana kwiaciarnia: Zaloguj</title>
+{% endblock %}
+{% block content %}
+<div>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {% for field in form %}
+        {{field.label}}
+        {{field}}
+        <br>
+        {% endfor %}
+    </form>
+</div>
+{% endblock %}

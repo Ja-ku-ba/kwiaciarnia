@@ -13,3 +13,8 @@ class UserForm(FlaskForm):
     password1 = PasswordField(label='Hasło: ')
     password2 = PasswordField(label='Potwierdzenie hasła: ')
     submit = SubmitField(label="Stwórz konto")
+
+class Loginform(FlaskForm):
+    email = StringField(label='Adres email: ')
+    password = PasswordField(label='Hasło: ')
+    submit = SubmitField(label="Zaloguj")
