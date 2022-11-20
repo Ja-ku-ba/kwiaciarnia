@@ -35,5 +35,5 @@ class Post_likes(db.Model):
 
 class Post_dislikes(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    user_like = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    post_like = db.Column(db.Integer(), db.ForeignKey('posts.id'))
+    user_dislike = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    post_dislike = db.Column(db.Integer(), db.ForeignKey('posts.id'))

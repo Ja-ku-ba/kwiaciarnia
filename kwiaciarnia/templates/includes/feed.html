@@ -4,15 +4,18 @@
         <h3>{{post.title}}  {{post.id}}</h3>
         <br>
         {{post.body}}
-        {{likes.query.filter_by(post_like=post.id).count()}}
         <div class="buttons">
+            {{likes.query.filter_by(post_like=post.id).count()}}
             <form action="{{ url_for('like_result') }}" method="post">
                 <input type="hidden" name="like_button" value="{{post.id}}">
                 <input type="submit" value="Like">
             </form>
+        </div>
+        <div>
+            {{dislike.query.filter_by(post_dislike=post.id).count()}}
             <form action="{{ url_for('dislike_result') }}" method="post">
-                <input type="hidden" name="like_button" value="{{post.id}}">
-                <input type="button" value="Dislike" name="dislike_button">
+                <input type="hidden" name="dislike_button" value="{{post.id}}">
+                <input type="submit" value="Dislike" name="dislike_button">
             </form>
         </div>
         <hr>

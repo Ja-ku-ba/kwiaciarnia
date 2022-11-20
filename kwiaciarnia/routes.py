@@ -14,7 +14,8 @@ def stworz():
 def home():
     all_posts = Posts.query.all()
     likes = Post_likes()
-    return render_template('index.html', all_posts=all_posts, likes=likes)
+    dislike = Post_dislikes()
+    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike)
 
 @app.route('/like_result', methods=['GET', 'POST'])
 @login_required
@@ -39,11 +40,22 @@ def like_result():
 @app.route('/dislike_result', methods=['GET', 'POST'])
 @login_required
 def dislike_result():
-    liked_post = request.form.get('like_button')
-    add_like_post = Posts.query.filter_by(id=liked_post).first()
+    disliked_post = request.form.get('dislike_button')
     if request.method == "POST":
-        return str(liked_post)
-    return "zaskoczyło"
+        if not Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+            new_dislike = Post_dislikes(
+                user_dislike = current_user.id,
+                post_dislike = disliked_post
+            )
+            db.session.add(new_dislike)
+            db.session.commit()
+            return redirect(url_for('home'))
+        else:
+            new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
+            new_undislike.user_dislike = None
+            new_undislike.post_dislike = None
+            db.session.commit()
+    return redirect(url_for('home'))
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():
