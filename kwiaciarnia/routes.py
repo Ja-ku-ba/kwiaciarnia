@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request
 from kwiaciarnia import app, db
-from kwiaciarnia.forms import PostForm, UserForm
+from kwiaciarnia.forms import PostForm, UserForm, Loginform
 from kwiaciarnia.models import Posts, User
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
@@ -58,7 +58,17 @@ def register():
 
 @app.route("/zaloguj", methods=["GET", "POST"])
 def login():
-    pass
+    form = Loginform()
+    if request.method == "POST":
+        user_to_login = User.query.filter_by(email=form.email.data).first()
+        login_user(user_to_login)
+        return redirect(url_for("home"))
+    return render_template('login.html', form=form)
+
+@app.route("/wuloguj")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 @app.errorhandler(404)
 def invalid_route(e):
