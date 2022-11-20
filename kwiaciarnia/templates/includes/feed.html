@@ -4,6 +4,14 @@
         <h3>{{post.title}}</h3>
         <br>
         {{post.body}}
+        <div class="buttons">
+            <form action="{{ url_for('like_result') }}" method="post">
+                <input type="submit" value="{{ post.id }}" name="like_button">
+            </form>
+            <form action="/result" method="post">
+                <input type="button" value="Dislike" name="dislike_button">
+            </form>
+        </div>
         <hr>
     {% endfor %}
 </div>
