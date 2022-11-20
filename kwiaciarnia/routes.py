@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request
 from kwiaciarnia import app, db
 from kwiaciarnia.forms import PostForm, UserForm, Loginform
-from kwiaciarnia.models import Posts, User
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
 # oK5XKfRTkmBZShUafzZF
@@ -13,20 +13,49 @@ def stworz():
 @app.route("/")
 def home():
     all_posts = Posts.query.all()
-    return render_template('index.html', all_posts=all_posts)
+    likes = Post_likes()
+    dislike = Post_dislikes()
+    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike)
 
 @app.route('/like_result', methods=['GET', 'POST'])
 @login_required
 def like_result():
     liked_post = request.form.get('like_button')
-    add_like_post = Posts.query.filter_by(id=liked_post).first()
     if request.method == "POST":
-        return str(liked_post)
-    return "zaskoczyło"
+        if not Post_likes.query.filter_by(user_like=current_user.id).first():
+            new_like = Post_likes(
+                user_like = current_user.id,
+                post_like = liked_post
+            )
+            db.session.add(new_like)
+            db.session.commit()
+            return redirect(url_for('home'))
+        else:
+            new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
+            new_unlike.user_like = None
+            new_unlike.post_like = None
+            db.session.commit()
+    return redirect(url_for('home'))
 
-# bought_item = request.form.get('buy_item')
-# bought_item_object = Item.query.filter_by(name = bought_item).first()
-
+@app.route('/dislike_result', methods=['GET', 'POST'])
+@login_required
+def dislike_result():
+    disliked_post = request.form.get('dislike_button')
+    if request.method == "POST":
+        if not Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+            new_dislike = Post_dislikes(
+                user_dislike = current_user.id,
+                post_dislike = disliked_post
+            )
+            db.session.add(new_dislike)
+            db.session.commit()
+            return redirect(url_for('home'))
+        else:
+            new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
+            new_undislike.user_dislike = None
+            new_undislike.post_dislike = None
+            db.session.commit()
+    return redirect(url_for('home'))
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():
