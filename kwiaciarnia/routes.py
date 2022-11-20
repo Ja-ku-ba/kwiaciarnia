@@ -22,6 +22,12 @@ def home():
 def like_result():
     liked_post = request.form.get('like_button')
     if request.method == "POST":
+        if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+            new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
+            new_undislike.user_dislike = None
+            new_undislike.post_dislike = None
+            db.session.commit()
+            return redirect(url_for('home'))
         if not Post_likes.query.filter_by(user_like=current_user.id).first():
             new_like = Post_likes(
                 user_like = current_user.id,
@@ -35,6 +41,7 @@ def like_result():
             new_unlike.user_like = None
             new_unlike.post_like = None
             db.session.commit()
+            return redirect(url_for('home'))
     return redirect(url_for('home'))
 
 @app.route('/dislike_result', methods=['GET', 'POST'])
@@ -42,6 +49,11 @@ def like_result():
 def dislike_result():
     disliked_post = request.form.get('dislike_button')
     if request.method == "POST":
+        if Post_likes.query.filter_by(user_like=current_user.id).first():
+            new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
+            new_unlike.user_like = None
+            new_unlike.post_like = None
+            db.session.commit()
         if not Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
             new_dislike = Post_dislikes(
                 user_dislike = current_user.id,
@@ -55,6 +67,7 @@ def dislike_result():
             new_undislike.user_dislike = None
             new_undislike.post_dislike = None
             db.session.commit()
+            return redirect(url_for('home'))
     return redirect(url_for('home'))
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
