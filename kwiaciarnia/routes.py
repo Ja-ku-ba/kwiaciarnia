@@ -1,14 +1,21 @@
 from flask import render_template, redirect, url_for, request
 from kwiaciarnia import app, db
 from kwiaciarnia.forms import PostForm, UserForm, Loginform
-from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, User_Permisions
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
-# oK5XKfRTkmBZShUafzZF
-@app.route('/oK5XKfRTkmBZShUafzZF')
-def stworz():
-    db.create_all()
-    return "weszło"
+# # oK5XKfRTkmBZShUafzZF
+# @app.route('/oK5XKfRTkmBZShUafzZF')
+# def stworz():
+    # # db.create_all()
+    # # # new_admin = User_Permisions(
+    # # #     user_id = current_user.id,
+    # # #     is_admin = True,
+    # # #     is_stuff = True
+    # # # )
+    # # # db.session.add(new_admin)
+    # # # db.session.commit()
+#     return "weszło"
 
 @app.route("/")
 def home():
