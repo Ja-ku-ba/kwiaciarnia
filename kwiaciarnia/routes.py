@@ -1,14 +1,21 @@
 from flask import render_template, redirect, url_for, request
 from kwiaciarnia import app, db
 from kwiaciarnia.forms import PostForm, UserForm, Loginform
-from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, User_Permisions
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
-# oK5XKfRTkmBZShUafzZF
-@app.route('/oK5XKfRTkmBZShUafzZF')
-def stworz():
-    db.create_all()
-    return "weszło"
+# # oK5XKfRTkmBZShUafzZF
+# @app.route('/oK5XKfRTkmBZShUafzZF')
+# def stworz():
+    # # db.create_all()
+    # # # new_admin = User_Permisions(
+    # # #     user_id = current_user.id,
+    # # #     is_admin = True,
+    # # #     is_stuff = True
+    # # # )
+    # # # db.session.add(new_admin)
+    # # # db.session.commit()
+#     return "weszło"
 
 @app.route("/")
 def home():
@@ -22,6 +29,11 @@ def home():
 def like_result():
     liked_post = request.form.get('like_button')
     if request.method == "POST":
+        if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+            new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
+            new_undislike.user_dislike = None
+            new_undislike.post_dislike = None
+            db.session.commit()
         if not Post_likes.query.filter_by(user_like=current_user.id).first():
             new_like = Post_likes(
                 user_like = current_user.id,
@@ -29,7 +41,6 @@ def like_result():
             )
             db.session.add(new_like)
             db.session.commit()
-            return redirect(url_for('home'))
         else:
             new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
             new_unlike.user_like = None
@@ -42,6 +53,11 @@ def like_result():
 def dislike_result():
     disliked_post = request.form.get('dislike_button')
     if request.method == "POST":
+        if Post_likes.query.filter_by(user_like=current_user.id).first():
+            new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
+            new_unlike.user_like = None
+            new_unlike.post_like = None
+            db.session.commit()
         if not Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
             new_dislike = Post_dislikes(
                 user_dislike = current_user.id,
@@ -49,7 +65,6 @@ def dislike_result():
             )
             db.session.add(new_dislike)
             db.session.commit()
-            return redirect(url_for('home'))
         else:
             new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
             new_undislike.user_dislike = None

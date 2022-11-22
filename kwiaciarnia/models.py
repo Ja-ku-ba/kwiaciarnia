@@ -2,19 +2,6 @@ from flask_login import UserMixin
 from kwiaciarnia import db, login_manager
 import datetime
 
-
-
-class Posts(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(length=128))
-    body = db.Column(db.Text())
-    added = db.Column(db.DateTime(), default=datetime.datetime.now())
-    likes = db.Column(db.Integer(), default=0)
-    dislikes = db.Column(db.Integer(), default=0)
-    def __repr__(self):
-        return self.body()
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -27,6 +14,22 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return self.username()
 
+class User_Permisions(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    is_admin = db.Column(db.Boolean())
+    is_stuff = db.Column(db.Boolean())
+    
+
+class Posts(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column(db.String(length=128))
+    body = db.Column(db.Text())
+    added = db.Column(db.DateTime(), default=datetime.datetime.now())
+    likes = db.Column(db.Integer(), default=0)
+    dislikes = db.Column(db.Integer(), default=0)
+    def __repr__(self):
+        return self.body()
 
 class Post_likes(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
