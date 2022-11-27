@@ -110,10 +110,13 @@ def register():
 @app.route("/zaloguj", methods=["GET", "POST"])
 def login():
     form = Loginform()
-    if request.method == "POST":
+    if form.validate_on_submit():
         user_to_login = User.query.filter_by(email=form.email.data).first()
-        login_user(user_to_login)
-        return redirect(url_for("home"))
+        if user_to_login and User.query.filter_by(password_hash=form.password.data()):
+            
+            login_user(user_to_login)
+            return redirect(url_for("home"))
+        return 'pop'
     return render_template('login.html', form=form)
 
 @app.route("/wuloguj")
@@ -124,4 +127,3 @@ def logout():
 @app.errorhandler(404)
 def invalid_route(e):
     return 'Wprowadszono niepoprawny adres'
-
