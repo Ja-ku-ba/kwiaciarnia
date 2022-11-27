@@ -8,4 +8,7 @@
     {% else %}
     <a href="{{ url_for('login') }}">Zaloguj</a>
     {% endif %}
+    {% if current_user.is_admin() %}
+    <a>mejbi</a>
+    {% endif %}
 </div>

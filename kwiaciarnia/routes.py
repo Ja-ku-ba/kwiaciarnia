@@ -4,24 +4,30 @@ from kwiaciarnia.forms import PostForm, UserForm, Loginform
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, User_Permisions
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
-# # oK5XKfRTkmBZShUafzZF
-# @app.route('/oK5XKfRTkmBZShUafzZF')
-# def stworz():
-    # # db.create_all()
-    # # # new_admin = User_Permisions(
-    # # #     user_id = current_user.id,
-    # # #     is_admin = True,
-    # # #     is_stuff = True
-    # # # )
-    # # # db.session.add(new_admin)
-    # # # db.session.commit()
-#     return "weszło"
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #   oK5XKfRTkmBZShUafzZF
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # @app.route('/oK5XKfRTkmBZShUafzZF')
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # def stworz():
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     db.create_all()
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     return "baza danych stworzona"
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #   BZDbQm7C2thGaocmuCWJ
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # @app.route('/BZDbQm7C2thGaocmuCWJ')
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # def admin():
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     new_admin = User_Permisions(
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #         user_id = current_user.id,
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #         is_admin = True,
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #         is_stuff = True
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     )
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     db.session.add(new_admin)
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     db.session.commit()
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     return "witaj nowy admine"
 
 @app.route("/")
 def home():
     all_posts = Posts.query.all()
     likes = Post_likes()
     dislike = Post_dislikes()
+    admin_status = User_Permisions()
     return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike)
 
 @app.route('/like_result', methods=['GET', 'POST'])
