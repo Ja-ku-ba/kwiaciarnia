@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db
 from kwiaciarnia.forms import PostForm, UserForm, Loginform
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, User_Permisions
@@ -98,7 +98,7 @@ def register():
     if form.validate_on_submit():
         new_user = User(
             username = form.username.data, 
-            password_hash = form.password1.data,
+            password = form.password1.data,
             email = form.email.data
         )
         db.session.add(new_user)
@@ -112,11 +112,12 @@ def login():
     form = Loginform()
     if form.validate_on_submit():
         user_to_login = User.query.filter_by(email=form.email.data).first()
-        if user_to_login and User.query.filter_by(password_hash=form.password.data()):
-            
+        if user_to_login and user_to_login.check_password_correction(attempted_password=form.password.data):
+            print('imo')
             login_user(user_to_login)
             return redirect(url_for("home"))
-        return 'pop'
+        else:
+            flash('Wprowadzony emial, lub hasło jest błędne', category='danger')
     return render_template('login.html', form=form)
 
 @app.route("/wuloguj")
