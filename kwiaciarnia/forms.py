@@ -16,6 +16,6 @@ class UserForm(FlaskForm):
     submit = SubmitField(label="Stwórz konto")
 
 class Loginform(FlaskForm):
-    email = StringField(label='Adres email: ', validators=[Email()])
+    email = StringField(label='Adres email: ', validators=[DataRequired()])
     password = PasswordField(label='Hasło: ', validators=[DataRequired()])
     submit = SubmitField(label="Zaloguj")

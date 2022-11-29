@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-from kwiaciarnia import db, login_manager
+from kwiaciarnia import db, login_manager, bcrypt
 import datetime
 
 @login_manager.user_loader
@@ -11,15 +11,29 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(length=64), nullable= False, unique=True)
     email = db.Column(db.String(), nullable= False, unique=True)
     password_hash = db.Column(db.String(length=16), nullable= False)
+    is_admin = db.Column(db.Boolean(), default=False)
+    is_stuff = db.Column(db.Boolean(), default=False)
     def __repr__(self):
         return self.username()
+        
+    @property
+    def password(self):
+        return self.password
 
-class User_Permisions(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    is_admin = db.Column(db.Boolean())
-    is_stuff = db.Column(db.Boolean())
-    
+    @property
+    def is_admin(self):
+        return self.is_admin
+
+    @property
+    def is_stuff(self):
+        return self.is_stuff
+
+    @password.setter
+    def password(self, plain_text_password):
+        self.password_hash = bcrypt.generate_password_hash(plain_text_password).decode('UTF-8')
+
+    def check_password_correction(self, attempted_password):
+        return bcrypt.check_password_hash(self.password_hash, attempted_password)
 
 class Posts(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
