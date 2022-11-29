@@ -1,33 +1,31 @@
 from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db
 from kwiaciarnia.forms import PostForm, UserForm, Loginform
-from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, User_Permisions
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #   oK5XKfRTkmBZShUafzZF
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # @app.route('/oK5XKfRTkmBZShUafzZF')
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # def stworz():
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     db.create_all()
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     return "baza danych stworzona"
+#   oK5XKfRTkmBZShUafzZF
+@app.route('/oK5XKfRTkmBZShUafzZF')
+def stworz():
+    db.create_all()
+    return "baza danych stworzona"
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #   BZDbQm7C2thGaocmuCWJ
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # @app.route('/BZDbQm7C2thGaocmuCWJ')
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # def admin():
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     new_admin = User_Permisions(
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #         user_id = current_user.id,
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #         is_admin = True,
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #         is_stuff = True
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     )
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     db.session.add(new_admin)
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     db.session.commit()
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #     return "witaj nowy admine"
+#   BZDbQm7C2thGaocmuCWJ
+@app.route('/BZDbQm7C2thGaocmuCWJ')
+def admin():
+    new_admin = User.query.filter_by(id=current_user.id).first()
+    if new_admin:
+        new_admin.is_admin = True
+        new_admin.is_stuff = True
+        db.session.commit()
+        return 'ok'
+    return "witaj nowy admine"
 
 @app.route("/")
 def home():
     all_posts = Posts.query.all()
     likes = Post_likes()
     dislike = Post_dislikes()
-    admin_status = User_Permisions()
     return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike)
 
 @app.route('/like_result', methods=['GET', 'POST'])
