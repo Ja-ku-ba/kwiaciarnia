@@ -8,11 +8,7 @@
     {% else %}
         <a href="{{ url_for('login') }}">Zaloguj</a>
     {% endif %}
-    {% if current_user.is_admin %}
-        <a>Admin</a>
-    {% else %}
-        {% if current_user.is_stuff %}
-            <a>Staff</a> 
-        {% endif %}
+    {% if current_user.is_admin or current_user.is_stuff %}
+        <a href="{{ url_for('manage') }}">Zarządzaj stroną</a>
     {% endif %}
 </div>
