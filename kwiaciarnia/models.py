@@ -15,18 +15,10 @@ class User(db.Model, UserMixin):
     is_stuff = db.Column(db.Boolean(), default=False)
     def __repr__(self):
         return self.username()
-        
+
     @property
     def password(self):
         return self.password
-
-    @property
-    def is_admin(self):
-        return self.is_admin
-
-    @property
-    def is_stuff(self):
-        return self.is_stuff
 
     @password.setter
     def password(self, plain_text_password):
