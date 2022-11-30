@@ -30,7 +30,13 @@ def home():
     all_posts = Posts.query.all()
     likes = Post_likes()
     dislike = Post_dislikes()
-    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike)
+    like_status = False
+    if Post_likes.query.filter_by(user_like=current_user.id).first():
+        like_status = True 
+    dislike_status = False
+    if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+        dislike_status = True 
+    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike, like_status=like_status, dislike_status=dislike_status)
 
 @app.route('/like_result', methods=['GET', 'POST'])
 @login_required
@@ -82,11 +88,11 @@ def dislike_result():
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():
-    add_post = PostForm()
-    if add_post.validate_on_submit():
+    form = PostForm()
+    if form.validate_on_submit():
         post_to_create = Posts(
-            title = add_post.title.data,
-            body = add_post.body.data,
+            title = form.title.data,
+            body = form.body.data,
             likes = 0,
             dislikes = 0,
             added = datetime.datetime.now()
@@ -94,7 +100,7 @@ def add_post():
         db.session.add(post_to_create)
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('add_post.html', add_post=add_post)
+    return render_template('add_post.html', form=form)
 
 @app.route('/kotakt')
 def contact():

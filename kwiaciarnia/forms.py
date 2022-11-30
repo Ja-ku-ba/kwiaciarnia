@@ -3,8 +3,8 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import Length, EqualTo, DataRequired, Email, ValidationError
 
 class PostForm(FlaskForm):
-    title = StringField(label="Nagłówek: ")
-    body = StringField(label="Treść postu: ")
+    title = StringField(label="Nagłówek: ", validators=[DataRequired()])
+    body = StringField(label="Treść postu: ", validators=[DataRequired()])
     submit = SubmitField(label="Potwierdź")
 
 

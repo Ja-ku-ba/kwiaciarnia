@@ -4,13 +4,19 @@
 {% endblock %}
 {% block content %}
 <div>
-    <form method="post" >
-        {{ add_post.hidden_tag() }}
-        {% for field in add_post %}
-            {{field.label()}}
-            {{field}}
-            <br>
-        {% endfor %}
-    <form>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.title.label() }}
+            {{ form.title() }}
+        </div>
+        <div>
+            {{ form.body.label() }}
+            {{ form.body() }}
+        </div>
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
 </div>
 {% endblock %}
