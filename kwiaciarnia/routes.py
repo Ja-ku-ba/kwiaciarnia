@@ -21,6 +21,10 @@ def admin():
         return 'ok'
     return "witaj nowy admine"
 
+@app.route('/manage')
+def manage():
+    return render_template('manage.html')
+
 @app.route("/")
 def home():
     all_posts = Posts.query.all()
