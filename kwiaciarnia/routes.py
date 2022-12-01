@@ -31,11 +31,14 @@ def home():
     likes = Post_likes()
     dislike = Post_dislikes()
     like_status = False
-    if Post_likes.query.filter_by(user_like=current_user.id).first():
-        like_status = True 
     dislike_status = False
-    if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
-        dislike_status = True 
+    if not current_user.is_anonymous:
+        if Post_likes.query.filter_by(user_like=current_user.id).first():
+            like_status = True
+        if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+            dislike_status = True 
+    else:
+        pass
     return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike, like_status=like_status, dislike_status=dislike_status)
 
 @app.route('/like_result', methods=['GET', 'POST'])
@@ -101,6 +104,16 @@ def add_post():
         db.session.commit()
         return redirect(url_for('home'))
     return render_template('add_post.html', form=form)
+
+@app.route('/usun_post', methods=['GET', 'POST'])
+@login_required
+def delete_post():
+    deleted_form = request.form.get('delete_post')
+    if request.method == "POST":
+        Posts.query.filter_by(id=deleted_form).delete()
+        db.session.commit()
+        return redirect(url_for('home'))
+    return render_template('delete_post_comfirmation.html', deleted_form=deleted_form)
 
 @app.route('/kotakt')
 def contact():
