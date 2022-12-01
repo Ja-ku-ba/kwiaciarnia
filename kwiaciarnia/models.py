@@ -34,7 +34,7 @@ class Posts(db.Model):
     likes = db.Column(db.Integer(), default=0)
     dislikes = db.Column(db.Integer(), default=0)
     def __repr__(self):
-        return self.body()
+        return self.id()
 
 class Post_likes(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
