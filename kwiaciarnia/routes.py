@@ -31,11 +31,14 @@ def home():
     likes = Post_likes()
     dislike = Post_dislikes()
     like_status = False
-    if Post_likes.query.filter_by(user_like=current_user.id).first():
-        like_status = True 
     dislike_status = False
-    if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
-        dislike_status = True 
+    if not current_user.is_anonymous:
+        if Post_likes.query.filter_by(user_like=current_user.id).first():
+            like_status = True
+        if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+            dislike_status = True 
+    else:
+        pass
     return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike, like_status=like_status, dislike_status=dislike_status)
 
 @app.route('/like_result', methods=['GET', 'POST'])
