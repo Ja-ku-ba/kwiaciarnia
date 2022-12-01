@@ -5,10 +5,10 @@
 {% block content %}
 <div>
     <h1>Czy na pewno chcesz usunąć ten post?</h1>
-    <form action="{{ url_for('delete_post') }}" method="post">
-        <input type="submit" name="Usuń">
-        <input type="hidden" name="like_button" value="{{deleted_form.id}}">
-        
+    <h3>{{post.title}}</h3>
+    <h5>{{post.body}}</h5>
+    <form method="post">
+        <input type="submit" value="Usuń">        
     </form>
 </div>
 {% endblock %}

@@ -105,16 +105,17 @@ def add_post():
         return redirect(url_for('home'))
     return render_template('add_post.html', form=form)
 
-@app.route('/usun_post', methods=['GET', 'POST'])
+@app.route('/usun_post/<int:id>', methods=['GET', 'POST'])
 @login_required
-def delete_post():
-    deleted_form = request.form.get('delete_post')
+def delete_post(id):
+    post = Posts.query.filter_by(id=id).first()
     if request.method == "POST":
-        Posts.query.filter_by(id=deleted_form).delete()
+        db.session.delete(post)
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('delete_post_comfirmation.html', deleted_form=deleted_form)
-
+    return render_template('delete_post_comfirmation.html', post=post)
+        
+        
 @app.route('/kotakt')
 def contact():
     return render_template('contact.html')
