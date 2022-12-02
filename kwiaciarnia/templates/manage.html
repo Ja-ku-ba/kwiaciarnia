@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}
-    {% if current_user.is_admin %}
-        <title>Zarządzanie stroną: Admin</title>
-    {% else %}
-        <title>Zarządzanie stroną: Moderator</title>
-    {% endif %}
+    <title>Zarządzanie stroną: Admin</title>
 {% endblock %}
 {% block content %}
 <div>
-    <h1>Mordor</h1>
+    {% for post in posts %}
+        <a href="#">{{post.title}}</a><a> {{post.added}}, like:{{post.likes}}, dislike:{{post.dislikes}}</a>
+        <hr>
+    {% endfor %}
 </div>
 {% endblock %}

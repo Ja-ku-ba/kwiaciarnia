@@ -6,7 +6,7 @@
         <div class="buttons">
             <p>Liczba polubień: {{likes.query.filter_by(post_like=post.id).count()}}</p>
             {% if current_user.is_authenticated %}
-            <form action="{{ url_for('like_result') }}" method="post">
+            <form action="{{ url_for('like_result', pk=post.id) }}" method="post">
                 {% if like_status %}
                 <p>
                     <span class="material-symbols-rounded">
@@ -28,7 +28,7 @@
         <div>
             <p>Liczba znielubień: {{dislike.query.filter_by(post_dislike=post.id).count()}}</p>
             {% if current_user.is_authenticated %}
-            <form action="{{ url_for('dislike_result') }}" method="post">
+            <form action="{{ url_for('dislike_result', pk=post.id) }}" method="post">
                 {% if dislike_status %}
                 <p>
                     <span class="material-symbols-rounded">
