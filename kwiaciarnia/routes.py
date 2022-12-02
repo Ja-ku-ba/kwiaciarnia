@@ -23,7 +23,8 @@ def admin():
 
 @app.route('/manage')
 def manage():
-    return render_template('manage.html')
+    posts = Posts.query.all()
+    return render_template('manage.html', posts=posts)
 
 @app.route("/")
 def home():
@@ -41,51 +42,63 @@ def home():
         pass
     return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike, like_status=like_status, dislike_status=dislike_status)
 
-@app.route('/like_result', methods=['GET', 'POST'])
+@app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
-def like_result():
+def like_result(pk):
     liked_post = request.form.get('like_button')
     if request.method == "POST":
         if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
             new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
             new_undislike.user_dislike = None
             new_undislike.post_dislike = None
+            undisliked = Posts.query.filter_by(id=pk).first()
+            undisliked.dislikes -= 1
             db.session.commit()
         if not Post_likes.query.filter_by(user_like=current_user.id).first():
             new_like = Post_likes(
                 user_like = current_user.id,
                 post_like = liked_post
             )
+            liked = Posts.query.filter_by(id=pk).first()
+            liked.likes += 1
             db.session.add(new_like)
             db.session.commit()
         else:
             new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
             new_unlike.user_like = None
             new_unlike.post_like = None
+            unlike = Posts.query.filter_by(id=pk).first()
+            unlike.likes -= 1
             db.session.commit()
     return redirect(url_for('home'))
 
-@app.route('/dislike_result', methods=['GET', 'POST'])
+@app.route('/dislike_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
-def dislike_result():
+def dislike_result(pk):
     disliked_post = request.form.get('dislike_button')
     if request.method == "POST":
         if Post_likes.query.filter_by(user_like=current_user.id).first():
             new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
             new_unlike.user_like = None
             new_unlike.post_like = None
+            unliked = Posts.query.filter_by(id=pk).first()
+            unliked.likes -= 1
             db.session.commit()
         if not Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
             new_dislike = Post_dislikes(
                 user_dislike = current_user.id,
                 post_dislike = disliked_post
             )
+            dislike = Posts.query.filter_by(id=pk).first()
+            dislike.dislikes += 1
             db.session.add(new_dislike)
             db.session.commit()
         else:
             new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
             new_undislike.user_dislike = None
             new_undislike.post_dislike = None
+            undisliked = Posts.query.filter_by(id=pk).first()
+            undisliked.dislikes -= 1
             db.session.commit()
     return redirect(url_for('home'))
 
@@ -155,4 +168,4 @@ def logout():
 
 @app.errorhandler(404)
 def invalid_route(e):
-    return 'Wprowadszono niepoprawny adres'
+    return render_template('404.html')
