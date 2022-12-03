@@ -27,8 +27,12 @@
     {% endblock %}
   </head>
   <body>
-    {% include 'includes/navbar.html' %}
-    {% block content %}
-    {% endblock %}
+    <div id="uno">
+      {% include 'includes/navbar.html' %}
+    </div>
+    <div id="duo">
+      {% block content %}
+      {% endblock %}
+    </div>
   </body>
 </html>
