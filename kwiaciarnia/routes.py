@@ -31,17 +31,7 @@ def home():
     all_posts = Posts.query.all()
     likes = Post_likes()
     dislike = Post_dislikes()
-    like_status = True
-    dislike_status = True
-    posts = Posts()
-    if not current_user.is_anonymous:
-        if Post_likes.query.filter_by(user_like=current_user.id).first():
-            like_status = True
-        if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
-            dislike_status = True 
-    else:
-        pass
-    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike, posts=posts, like_status=like_status, dislike_status=dislike_status)
+    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike)
 
 @app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
