@@ -5,7 +5,7 @@
 {% block content %}
 <div>
     {% for post in posts %}
-        <a href="#">{{post.title}}</a><a> {{post.added}}, like:{{post.likes}}, dislike:{{post.dislikes}}</a>
+        <a href="#">{{post.title}}</a><span> {{post.added}}, like:{{post.likes}}, dislike:{{post.dislikes}} </a><a href="{{ url_for('delete_post', id=post.id ) }}">Usuń post</a>
         <hr>
     {% endfor %}
 </div>

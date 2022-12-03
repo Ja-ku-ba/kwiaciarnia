@@ -6,44 +6,44 @@
         <div class="buttons">
             <p>Liczba polubień: {{likes.query.filter_by(post_like=post.id).count()}}</p>
             {% if current_user.is_authenticated %}
-            <form action="{{ url_for('like_result', pk=post.id) }}" method="post">
-                {% if like_status %}
-                <p>
-                    <span class="material-symbols-rounded">
-                        <input type="submit" value="thumb_up">
-                    </span>
-                </p>
-                {% else %}
-                <p>
-                    <span class="material-symbols-outlined">
-                        <input type="submit" value="thumb_up">
-                    </span>
-                </p>
-                {% endif %}
-                <input type="hidden" name="like_button" value="{{post.id}}">
-                
-            </form>
+                <form action="{{ url_for('like_result', pk=post.id) }}" method="post">
+                    {% if like_status %}
+                    <p>
+                        <span class="material-symbols-rounded">
+                            <input type="submit" value="thumb_up">
+                        </span>
+                    </p>
+                    {% else %}
+                    <p>
+                        <span class="material-symbols-outlined">
+                            <input type="submit" value="thumb_up">
+                        </span>
+                    </p>
+                    {% endif %}
+                    <input type="hidden" name="like_button" value="{{post.id}}">
+                    
+                </form>
             {% endif %}
         </div>
         <div>
             <p>Liczba znielubień: {{dislike.query.filter_by(post_dislike=post.id).count()}}</p>
             {% if current_user.is_authenticated %}
-            <form action="{{ url_for('dislike_result', pk=post.id) }}" method="post">
-                {% if dislike_status %}
-                <p>
-                    <span class="material-symbols-rounded">
-                        <input type="submit" value="thumb_down">
-                    </span>
-                </p>
-                {% else %}
-                <p>
-                    <span class="material-symbols-outlined">
-                        <input type="submit" value="thumb_down">
-                    </span>
-                </p>
-                {% endif %}
-                <input type="hidden" name="dislike_button" value="{{post.id}}">
-            </form>
+                <form action="{{ url_for('dislike_result', pk=post.id) }}" method="post">
+                    {% if dislike_status %}
+                    <p>
+                        <span class="material-symbols-rounded">
+                            <input type="submit" value="thumb_down">
+                        </span>
+                    </p>
+                    {% else %}
+                    <p>
+                        <span class="material-symbols-outlined">
+                            <input type="submit" value="thumb_down">
+                        </span>
+                    </p>
+                    {% endif %}
+                    <input type="hidden" name="dislike_button" value="{{post.id}}">
+                </form>
             {% endif %}
         </div>
         <hr>

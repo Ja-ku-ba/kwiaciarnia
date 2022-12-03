@@ -31,8 +31,9 @@ def home():
     all_posts = Posts.query.all()
     likes = Post_likes()
     dislike = Post_dislikes()
-    like_status = False
-    dislike_status = False
+    like_status = True
+    dislike_status = True
+    posts = Posts()
     if not current_user.is_anonymous:
         if Post_likes.query.filter_by(user_like=current_user.id).first():
             like_status = True
@@ -40,21 +41,20 @@ def home():
             dislike_status = True 
     else:
         pass
-    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike, like_status=like_status, dislike_status=dislike_status)
+    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike, posts=posts, like_status=like_status, dislike_status=dislike_status)
 
 @app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
 def like_result(pk):
     liked_post = request.form.get('like_button')
     if request.method == "POST":
-        if Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
-            new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
-            new_undislike.user_dislike = None
-            new_undislike.post_dislike = None
-            undisliked = Posts.query.filter_by(id=pk).first()
-            undisliked.dislikes -= 1
+        status_dislike = Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first()
+        if status_dislike:
+            undislike = Posts.query.filter_by(id=pk).first()
+            undislike.dislikes -= 1
+            db.session.delete(status_dislike)
             db.session.commit()
-        if not Post_likes.query.filter_by(user_like=current_user.id).first():
+        if not Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first():
             new_like = Post_likes(
                 user_like = current_user.id,
                 post_like = liked_post
@@ -64,9 +64,8 @@ def like_result(pk):
             db.session.add(new_like)
             db.session.commit()
         else:
-            new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
-            new_unlike.user_like = None
-            new_unlike.post_like = None
+            new_unlike = Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first()
+            db.session.delete(new_unlike)
             unlike = Posts.query.filter_by(id=pk).first()
             unlike.likes -= 1
             db.session.commit()
@@ -77,14 +76,13 @@ def like_result(pk):
 def dislike_result(pk):
     disliked_post = request.form.get('dislike_button')
     if request.method == "POST":
-        if Post_likes.query.filter_by(user_like=current_user.id).first():
-            new_unlike = Post_likes.query.filter_by(user_like=current_user.id).first()
-            new_unlike.user_like = None
-            new_unlike.post_like = None
-            unliked = Posts.query.filter_by(id=pk).first()
-            unliked.likes -= 1
-            db.session.commit()
-        if not Post_dislikes.query.filter_by(user_dislike=current_user.id).first():
+        status_unlike = Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first()
+        if status_unlike:
+            unlike = Posts.query.filter_by(id=pk).first()
+            unlike.dislikes -= 1
+            db.session.delete(status_unlike)
+            db.session.commit()        
+        if not Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first():
             new_dislike = Post_dislikes(
                 user_dislike = current_user.id,
                 post_dislike = disliked_post
@@ -94,9 +92,8 @@ def dislike_result(pk):
             db.session.add(new_dislike)
             db.session.commit()
         else:
-            new_undislike = Post_dislikes.query.filter_by(user_dislike=current_user.id).first()
-            new_undislike.user_dislike = None
-            new_undislike.post_dislike = None
+            new_undislike = Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first()
+            db.session.delete(new_undislike)
             undisliked = Posts.query.filter_by(id=pk).first()
             undisliked.dislikes -= 1
             db.session.commit()
