@@ -6,3 +6,21 @@
   'opsz' 48
 }
 
+.nav_bar {
+  background-color: #993232;
+  color: black;
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+body {
+  background-color: #f5ebeb;
+}
+
+
+tglr {
+  color: black;
+}

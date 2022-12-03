@@ -7,7 +7,7 @@
             <p>Liczba polubień: {{likes.query.filter_by(post_like=post.id).count()}}</p>
             {% if current_user.is_authenticated %}
                 <form action="{{ url_for('like_result', pk=post.id) }}" method="post">
-                    {% if like_status %}
+                    {% if likes.query.filter_by(post_like=post.id, user_like=current_user.id).first() %}
                     <p>
                         <span class="material-symbols-rounded">
                             <input type="submit" value="thumb_up">
@@ -29,7 +29,7 @@
             <p>Liczba znielubień: {{dislike.query.filter_by(post_dislike=post.id).count()}}</p>
             {% if current_user.is_authenticated %}
                 <form action="{{ url_for('dislike_result', pk=post.id) }}" method="post">
-                    {% if dislike_status %}
+                    {% if dislike.query.filter_by(post_dislike=post.id, user_dislike=current_user.id).first(): %}
                     <p>
                         <span class="material-symbols-rounded">
                             <input type="submit" value="thumb_down">
