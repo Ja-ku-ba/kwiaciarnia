@@ -48,12 +48,12 @@ def home():
 def like_result(pk):
     liked_post = request.form.get('like_button')
     if request.method == "POST":
-        # if Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id):
-        #     undislike = Post_dislikes.query.filter_by(post_dislike=pk).first()
-        #     db.session.delete(undislike)
-        #     count_up = Posts.query.filter_by(id=pk).first()
-        #     count_up.dislikes -= 1
-        #     db.session.commit()
+        status_dislike = Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first()
+        if status_dislike:
+            undislike = Posts.query.filter_by(id=pk).first()
+            undislike.dislikes -= 1
+            db.session.delete(status_dislike)
+            db.session.commit()
         if not Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first():
             new_like = Post_likes(
                 user_like = current_user.id,
@@ -76,12 +76,12 @@ def like_result(pk):
 def dislike_result(pk):
     disliked_post = request.form.get('dislike_button')
     if request.method == "POST":
-        # if Post_likes.query.filter_by(post_like=pk, user_like=current_user.id):
-        #     unlike = Post_likes.query.filter_by(post_like=pk).first()
-        #     db.session.delete(unlike)
-        #     count_up = Posts.query.filter_by(id=pk).first()
-        #     count_up.dislikes -= 1
-        #     db.session.commit()        
+        status_unlike = Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first()
+        if status_unlike:
+            unlike = Posts.query.filter_by(id=pk).first()
+            unlike.dislikes -= 1
+            db.session.delete(status_unlike)
+            db.session.commit()        
         if not Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first():
             new_dislike = Post_dislikes(
                 user_dislike = current_user.id,
