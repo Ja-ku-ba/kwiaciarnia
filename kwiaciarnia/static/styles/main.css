@@ -7,10 +7,9 @@
 }
 
 .nav_bar {
-  background-color: #993232;
+  background-color: #C00404;
   color: black;
   position: fixed;
-  overflow: hidden;
   top: 0;
   width: 100%;
   z-index: 1;
@@ -18,4 +17,10 @@
 
 body {
   background-color: #f5ebeb;
+}
+
+@media (max-width: 767.98px) { 
+  #responsive_spacer {
+    height: 48px;
+  }
 }

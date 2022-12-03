@@ -31,7 +31,7 @@ def home():
     all_posts = Posts.query.all()
     likes = Post_likes()
     dislike = Post_dislikes()
-    return render_template('index.html', all_posts=all_posts, likes=likes, dislike=dislike)
+    return render_template('home.html', all_posts=all_posts, likes=likes, dislike=dislike)
 
 @app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
