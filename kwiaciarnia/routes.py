@@ -95,9 +95,8 @@ def dislike_result(pk):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-def name_changer(id, filename):
-    extension = filename.rfind('.')
-    return str(id) + filename[extension:]
+def name_changer(id):
+    return str(id) + '.png'
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():
@@ -116,11 +115,10 @@ def add_post():
             if 'file' not in request.files:
                 return "nie przesłano pliku"
             file = request.files['file']
-            print(name_changer(post_to_create.id, file.filename))
             if file.filename == '':
                 return 'nie wybrano zadnego zdjecia'
             if file and allowed_file(file.filename):
-                filename = secure_filename(name_changer(post_to_create.id, file.filename))
+                filename = secure_filename(name_changer(post_to_create.id))
                 file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
                 return redirect(url_for('home'))
             else:
