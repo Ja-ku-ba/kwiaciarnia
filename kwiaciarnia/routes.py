@@ -1,9 +1,13 @@
 from flask import render_template, redirect, url_for, request, flash
-from kwiaciarnia import app, db
+from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from kwiaciarnia.forms import PostForm, UserForm, Loginform
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
+import urllib.request
+from werkzeug.utils import secure_filename
+import os 
+
 #   oK5XKfRTkmBZShUafzZF
 @app.route('/oK5XKfRTkmBZShUafzZF')
 def stworz():
@@ -156,3 +160,48 @@ def logout():
 @app.errorhandler(404)
 def invalid_route(e):
     return render_template('404.html')
+
+
+
+UPLOAD_FOLDER = 'kwiaciarnia/static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGHT'] = 16 * 1024 * 1024
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/tester', methods=['GET', 'POST'])
+def tester():
+    if request.method == "POST":
+        if 'file' not in request.files:
+            return "nie przesłano pliku"
+        file = request.files['file']
+        if file.filename == '':
+            return 'nie wybrano zadnego zdjecia'
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            return redirect(url_for('home'))
+        else:
+            return 'wybrałeś zły format'
+    return render_template('tester.html')
+
+# def upload_file():
+# if request.method == 'POST':
+#     # check if the post request has the file part
+#     if 'file' not in request.files:
+#         flash('No file part')
+#         return redirect(request.url)
+#     file = request.files['file']
+#     # If the user does not select a file, the browser submits an
+#     # empty file without a filename.
+#     if file.filename == '':
+#         flash('No selected file')
+#         return redirect(request.url)
+#     if file and allowed_file(file.filename):
+#         filename = secure_filename(file.filename)
+#         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#         return redirect(url_for('download_file', name=filename))
+# return '''
