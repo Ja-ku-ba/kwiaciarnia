@@ -11,7 +11,7 @@ login_manager = LoginManager(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kwiaciarnia.db'
 app.config['SECRET_KEY'] = '?D(G+KbPeShVmYq3'
 
-UPLOAD_FOLDER = 'static/uploads'
+UPLOAD_FOLDER = 'kwiaciarnia/static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGHT'] = 16 * 1024 * 1024
 

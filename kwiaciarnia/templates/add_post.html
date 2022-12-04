@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 <div>
-    <form method="post">
+    <form method="post" enctype=multipart/form-data>
         {{ form.hidden_tag() }}
         <div>
             {{ form.title.label() }}
@@ -13,6 +13,9 @@
         <div>
             {{ form.body.label() }}
             {{ form.body() }}
+        </div>
+        <div>
+            <input type=file name=file>
         </div>
         <div>
             {{ form.submit() }}
