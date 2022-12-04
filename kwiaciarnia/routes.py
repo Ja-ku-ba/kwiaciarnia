@@ -93,6 +93,12 @@ def dislike_result(pk):
             db.session.commit()
     return redirect(url_for('home'))
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def name_changer(id, filename):
+    extension = filename.rfind('.')
+    return str(id) + filename[extension:]
+
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():
     form = PostForm()
@@ -106,6 +112,19 @@ def add_post():
         )
         db.session.add(post_to_create)
         db.session.commit()
+        if request.method == "POST":
+            if 'file' not in request.files:
+                return "nie przesłano pliku"
+            file = request.files['file']
+            print(name_changer(post_to_create.id, file.filename))
+            if file.filename == '':
+                return 'nie wybrano zadnego zdjecia'
+            if file and allowed_file(file.filename):
+                filename = secure_filename(name_changer(post_to_create.id, file.filename))
+                file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+                return redirect(url_for('home'))
+            else:
+                return 'wybrałeś zły format'
         return redirect(url_for('home'))
     return render_template('add_post.html', form=form)
 
@@ -163,30 +182,6 @@ def invalid_route(e):
 
 
 
-UPLOAD_FOLDER = 'kwiaciarnia/static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGHT'] = 16 * 1024 * 1024
-
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-@app.route('/tester', methods=['GET', 'POST'])
-def tester():
-    if request.method == "POST":
-        if 'file' not in request.files:
-            return "nie przesłano pliku"
-        file = request.files['file']
-        if file.filename == '':
-            return 'nie wybrano zadnego zdjecia'
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-            return redirect(url_for('home'))
-        else:
-            return 'wybrałeś zły format'
-    return render_template('tester.html')
 
 # def upload_file():
 # if request.method == 'POST':
