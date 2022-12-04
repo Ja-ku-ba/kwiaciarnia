@@ -3,6 +3,9 @@
         <small>{{post.added}}, <a href="{{ url_for('delete_post', id=post.id ) }}">Usuń post</a></small>
         <h3>{{post.title}}  {{post.id}}</h3>
         <p><h2>{{post.body}}</h2></p>
+        <div>
+            <img src="static\uploads\{{post.id}}.png" alt="{{post.tittle}}">
+        </div>
         <div class="buttons">
             <p>Liczba polubień: {{likes.query.filter_by(post_like=post.id).count()}}</p>
             {% if current_user.is_authenticated %}
