@@ -4,7 +4,7 @@ from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
-import urllib.request                                                                               #without that u r unable to create db
+import urllib.request                                                                               #without that u r unable to create/edit db
 from werkzeug.utils import secure_filename
 import os 
 
@@ -134,7 +134,8 @@ def delete_post(id):
  
 @app.route('/oferta')
 def products():
-    return render_template('products.html')
+    products_to_sale = Products.query.all()
+    return render_template('products.html', products_to_sale=products_to_sale)
 
 @app.route('/dodaj produkt', methods=["GET", "POST"])
 def add_product():
