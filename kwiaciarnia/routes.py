@@ -133,6 +133,7 @@ def delete_post(id):
     if request.method == "POST":
         db.session.delete(post)
         db.session.commit()
+        os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/{id}.png")
         return redirect(url_for('home'))
     return render_template('delete_post_comfirmation.html', post=post)
         
