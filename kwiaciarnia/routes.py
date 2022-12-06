@@ -1,34 +1,29 @@
 from flask import render_template, redirect, url_for, request, flash
-from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
-from kwiaciarnia.forms import PostForm, UserForm, Loginform
-from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes
+from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS
+from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
-import urllib.request
+import urllib.request                                                                               #without that u r unable to create db
 from werkzeug.utils import secure_filename
 import os 
 
-#   oK5XKfRTkmBZShUafzZF
-@app.route('/oK5XKfRTkmBZShUafzZF')
-def stworz():
-    db.create_all()
-    return "baza danych stworzona"
+# #   oK5XKfRTkmBZShUafzZF
+# @app.route('/oK5XKfRTkmBZShUafzZF')
+# def stworz():
+#     db.create_all()
+#     return "baza danych stworzona"
 
-#   BZDbQm7C2thGaocmuCWJ
-@app.route('/BZDbQm7C2thGaocmuCWJ')
-def admin():
-    new_admin = User.query.filter_by(id=current_user.id).first()
-    if new_admin:
-        new_admin.is_admin = True
-        new_admin.is_stuff = True
-        db.session.commit()
-        return 'ok'
-    return "witaj nowy admine"
-
-@app.route('/manage')
-def manage():
-    posts = Posts.query.all()
-    return render_template('manage.html', posts=posts)
+# #   BZDbQm7C2thGaocmuCWJ
+# @app.route('/BZDbQm7C2thGaocmuCWJ')
+# def admin():
+#     new_admin = User.query.filter_by(id=current_user.id).first()
+#     if new_admin:
+#         new_admin.is_admin = True
+#         new_admin.is_stuff = True
+#         db.session.commit()
+#         return 'ok'
+#     return "witaj nowy admine"
 
 @app.route("/")
 def home():
@@ -119,7 +114,7 @@ def add_post():
                 return 'nie wybrano zadnego zdjecia'
             if file and allowed_file(file.filename):
                 filename = secure_filename(name_changer(post_to_create.id))
-                file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+                file.save(os.path.join(app.config["UPLOAD_FOLDER_POSTS"], filename))
                 return redirect(url_for('home'))
             else:
                 return 'wybrałeś zły format'
@@ -133,11 +128,30 @@ def delete_post(id):
     if request.method == "POST":
         db.session.delete(post)
         db.session.commit()
-        os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/{id}.png")
+        os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/posts/{id}.png")
         return redirect(url_for('home'))
     return render_template('delete_post_comfirmation.html', post=post)
-        
-        
+ 
+@app.route('/oferta')
+def products():
+    return render_template('products.html')
+
+@app.route('/dodaj produkt', methods=["GET", "POST"])
+def add_product():
+    form = AddProductForm()
+    if form.validate_on_submit():
+        new_product = Products(
+            category = form.category.data,
+            name = form.name.data,
+            description = form.description.data,
+            price = form.price.data,
+        )
+        db.session.add(new_product)
+        db.session.commit()
+        return redirect(url_for('home'))
+    print(form.validate_on_submit())
+    return render_template('add_product.html', form=form)
+
 @app.route('/kotakt')
 def contact():
     return render_template('contact.html')
@@ -179,23 +193,7 @@ def logout():
 def invalid_route(e):
     return render_template('404.html')
 
-
-
-
-# def upload_file():
-# if request.method == 'POST':
-#     # check if the post request has the file part
-#     if 'file' not in request.files:
-#         flash('No file part')
-#         return redirect(request.url)
-#     file = request.files['file']
-#     # If the user does not select a file, the browser submits an
-#     # empty file without a filename.
-#     if file.filename == '':
-#         flash('No selected file')
-#         return redirect(request.url)
-#     if file and allowed_file(file.filename):
-#         filename = secure_filename(file.filename)
-#         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#         return redirect(url_for('download_file', name=filename))
-# return '''
+@app.route('/manage')
+def manage():
+    posts = Posts.query.all()
+    return render_template('manage.html', posts=posts)
