@@ -7,26 +7,32 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('products') }}">Oferta</a>
+        </li>
+        <li class="nav-item active">
             <a class="nav-link" href="{{ url_for('contact') }}">Kontakt</a>
         </li>
-        {% if current_user.is_authenticated  %}
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ url_for('logout') }}">Wyloguj</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">@{{current_user.username}}</a>
-            </li>
-        {% else %}
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ url_for('login') }}">Zaloguj</a>
-            </li>
-        {% endif %}
         {% if current_user.is_admin %}
             <li class="nav-item active">
             <a class="nav-link" href="{{ url_for('add_post') }}">Dodaj post</a>
             </li>
             <li class="nav-item active">
+                <a class="nav-link" href='{{ url_for("add_product") }}'>Dodaj produkt</a>
+            </li>
+            <li class="nav-item active">
             <a class="nav-link" href="{{ url_for('manage') }}">Zarządzaj stroną</a>
+            </li>
+        {% endif %}
+        {% if current_user.is_authenticated  %}
+            <li class="nav-item active">
+                <a class="nav-link" href="#">@{{current_user.username}}</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('logout') }}">Wyloguj</a>
+            </li>
+        {% else %}
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('login') }}">Zaloguj</a>
             </li>
         {% endif %}
       </ul>

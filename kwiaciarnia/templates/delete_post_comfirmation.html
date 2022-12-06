@@ -3,6 +3,7 @@
 <title>Usuń post</title>
 {% endblock %}
 {% block content %}
+{% if current_user.is_admin %}
 <div>
     <h1>Czy na pewno chcesz usunąć ten post?</h1>
     <h3>{{post.title}}</h3>
@@ -11,4 +12,5 @@
         <input type="submit" value="Usuń">        
     </form>
 </div>
+{% endif %}
 {% endblock %}

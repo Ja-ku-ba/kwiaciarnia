@@ -28,7 +28,7 @@ class User(db.Model, UserMixin):
 
 class Posts(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(length=128))
+    title = db.Column(db.String())
     body = db.Column(db.Text())
     added = db.Column(db.DateTime(), default=datetime.datetime.now())
     likes = db.Column(db.Integer(), default=0)
@@ -45,3 +45,10 @@ class Post_dislikes(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_dislike = db.Column(db.Integer(), db.ForeignKey('user.id'))
     post_dislike = db.Column(db.Integer(), db.ForeignKey('posts.id'))
+
+class Products(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    category = db.Column(db.String(length=30))
+    name = db.Column(db.String(), unique=True)
+    description = db.Column(db.String())
+    price = db.Column(db.Integer())

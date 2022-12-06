@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if current_user.is_admin %}
+<div>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.category.label() }}
+            {{ form.category() }}
+        </div>
+        <div>
+            {{ form.name.label() }}
+            {{ form.name() }}
+        </div>
+        <div>
+            {{ form.description.label() }}
+            {{ form.description() }}
+        </div>
+        <div>
+            {{ form.price.label() }}
+            {{ form.price() }}
+        </div>
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endblock content %}
