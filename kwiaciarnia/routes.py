@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS
 from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
-from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
 import urllib.request                                                                               #without that u r unable to create/edit db
@@ -133,20 +133,33 @@ def delete_post(id):
     return render_template('delete_post_comfirmation.html', post=post)
  
 @app.route('/oferta')
-def products():
-    products_to_sale = Products.query.all()
-    return render_template('products.html', products_to_sale=products_to_sale)
+def products_categories():
+    products_to_sale = Products.query.group_by(Products.category).all()
+    return render_template('products_categories.html', products_to_sale=products_to_sale)
+
+def check_if_category_exist(name):
+    if Product_category.query.filter_by(name=name).first() is not None:
+        category_id = Product_category.query.filter_by(name=name).first()
+        return category_id.id
+    else:
+        category_id = Product_category(
+            name = name
+        )
+        db.session.add(category_id)
+        db.session.commit()
+        return category_id.id
 
 @app.route('/dodaj produkt', methods=["GET", "POST"])
 def add_product():
     form = AddProductForm()
     if form.validate_on_submit():
         new_product = Products(
-            category = form.category.data,
+            category = check_if_category_exist(form.category.data),
             name = form.name.data,
             description = form.description.data,
             price = form.price.data,
         )
+        # return f'{Product_category.query.filter_by(name=form.category.data).first() is not None}, {new_product.category} {new_product.name} {new_product.description} {new_product.price}' 
         db.session.add(new_product)
         db.session.commit()
         return redirect(url_for('home'))
