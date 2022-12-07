@@ -41,3 +41,22 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+
+#feed_spacer {
+  padding-bottom: 15px;
+}
+
+#feed {
+  display: flex;
+  justify-content: center;
+}
+
+.button_dislike {
+  float:left; 
+  width:50%;
+}
+
+.button_like {
+  float:right;
+  width:50%;
+}
