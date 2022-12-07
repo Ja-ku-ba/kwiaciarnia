@@ -24,3 +24,20 @@ body {
     height: 48px;
   }
 }
+
+#scrolly {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px;
+}
+
+#scrolly > div {
+  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}

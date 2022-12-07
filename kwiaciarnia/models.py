@@ -46,9 +46,13 @@ class Post_dislikes(db.Model):
     user_dislike = db.Column(db.Integer(), db.ForeignKey('user.id'))
     post_dislike = db.Column(db.Integer(), db.ForeignKey('posts.id'))
 
+class Product_category(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(length=30))
+
 class Products(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    category = db.Column(db.String(length=30))
+    category = db.Column(db.Integer(), db.ForeignKey('product_category.id'))
     name = db.Column(db.String(), unique=True)
     description = db.Column(db.String())
     price = db.Column(db.Integer())
