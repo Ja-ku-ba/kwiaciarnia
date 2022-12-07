@@ -2,7 +2,7 @@
 {% block content %}
 {% if current_user.is_admin %}
 <div>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div>
             {{ form.category.label() }}
@@ -19,6 +19,9 @@
         <div>
             {{ form.price.label() }}
             {{ form.price() }}
+        </div>
+        <div>
+            <input type=file name=file>
         </div>
         <div>
             {{ form.submit() }}

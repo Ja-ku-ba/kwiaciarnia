@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, request, flash
-from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS
+from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS, UPLOAD_FOLDER_PRODUCTS
 from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category
 from flask_login import login_user, logout_user, login_required, current_user
@@ -24,6 +24,25 @@ import os
 #         db.session.commit()
 #         return 'ok'
 #     return "witaj nowy admine"
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def name_changer(id):
+    return str(id) + '.png'
+def add_photo(id, folder_name):
+    print("OKINAWA")
+    if request.method == "POST":
+        if 'file' not in request.files:
+            print("nie przesłano pliku")
+        file = request.files['file']
+        if file.filename == '':
+            print('nie wybrano zadnego zdjecia')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(name_changer(id))
+            file.save(os.path.join(app.config[f"{folder_name}"], filename))
+            return redirect(url_for('home'))
+        else:
+            print('wybrałeś zły format')
 
 @app.route("/")
 def home():
@@ -88,11 +107,6 @@ def dislike_result(pk):
             db.session.commit()
     return redirect(url_for('home'))
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-def name_changer(id):
-    return str(id) + '.png'
-
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 def add_post():
     form = PostForm()
@@ -106,18 +120,7 @@ def add_post():
         )
         db.session.add(post_to_create)
         db.session.commit()
-        if request.method == "POST":
-            if 'file' not in request.files:
-                return "nie przesłano pliku"
-            file = request.files['file']
-            if file.filename == '':
-                return 'nie wybrano zadnego zdjecia'
-            if file and allowed_file(file.filename):
-                filename = secure_filename(name_changer(post_to_create.id))
-                file.save(os.path.join(app.config["UPLOAD_FOLDER_POSTS"], filename))
-                return redirect(url_for('home'))
-            else:
-                return 'wybrałeś zły format'
+        add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
         return redirect(url_for('home'))
     return render_template('add_post.html', form=form)
 
@@ -159,9 +162,9 @@ def add_product():
             description = form.description.data,
             price = form.price.data,
         )
-        # return f'{Product_category.query.filter_by(name=form.category.data).first() is not None}, {new_product.category} {new_product.name} {new_product.description} {new_product.price}' 
         db.session.add(new_product)
         db.session.commit()
+        add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
         return redirect(url_for('home'))
     print(form.validate_on_submit())
     return render_template('add_product.html', form=form)
