@@ -1,15 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
-<div>
-    <div class="scrollmenu" id="scrolly">
-        {% for product in products_to_sale %}
+<div class="scrollmenu" id="scrolly">
+    {% for product in products_to_sale_category %}
+        <a href="#">
             <div class="card"  style="width: 18rem;">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <a href="#" class="btn btn-info">{{product.name}}</a>
-                </div>
+                {% for prd in products_to_sale_id %}
+                    {% if prd.category == product.id %}
+                        <img class="card-img-top png" src="static\uploads\products\{{prd.id}}.png" alt="{{product.id}}" style="height: 15rem; width: 500;">
+                    {% endif %}
+                {% endfor %}
+                    <a href="#" class="btn btn-muted">{{product.name}}</a>
             </div>
-        {% endfor %}
-    </div>
+        </a>
+    {% endfor %}
 </div>
 {% endblock %}
+
+
+
+
+
+
+
+
+<hr>
+{% for prd in products_to_sale_id %}
+{{prd.category}}
+{% endfor %}
+<hr>
+{% for product in products_to_sale_category %}
+{{product.id}}
+{% endfor %}
+<hr>
+{% for prd in products_to_sale_id %}
+    {% for product in products_to_sale_category %}
+            {% if prd.category==product.id%}
+                <h1>{{prd.id}}</h1>
+            {% endif %}
+    {% endfor %}
+{% endfor %}

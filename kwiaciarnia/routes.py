@@ -137,8 +137,9 @@ def delete_post(id):
  
 @app.route('/oferta')
 def products_categories():
-    products_to_sale = Product_category.query.group_by(Product_category.name).all()
-    return render_template('products_categories.html', products_to_sale=products_to_sale)
+    products_to_sale_category = Product_category.query.group_by(Product_category.name).all()
+    products_to_sale_id = Products.query.group_by(Products.category).all()
+    return render_template('products_categories.html', products_to_sale_category=products_to_sale_category, products_to_sale_id=products_to_sale_id)
 
 def check_if_category_exist(name):
     if Product_category.query.filter_by(name=name).first() is not None:

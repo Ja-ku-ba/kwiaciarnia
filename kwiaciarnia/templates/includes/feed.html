@@ -1,31 +1,11 @@
 {% for post in all_posts %}
     <div id="feed">
-        <div class="card" style="width: 25rem;">
+        <div class="card" style="width: 35rem;">
             <img class="card-img-top" src="static\uploads\posts\{{post.id}}.png" alt="{{post.tittle}}">
             <div class="card-body">
                 <h3 class="card-title">{{post.title}}</h3>
                 <p class="card-text">{{post.body}}</p>    
                 <div id="buttons">
-                    <div class="button_dislike buttons_space">
-                        {% if current_user.is_authenticated %}
-                            <form action="{{ url_for('dislike_result', pk=post.id) }}" method="post">
-                                {% if dislike.query.filter_by(post_dislike=post.id, user_dislike=current_user.id).first(): %}
-                                <p>
-                                    <span class="material-symbols-rounded">
-                                        <input type="submit" value="thumb_down">
-                                    </span>
-                                </p>
-                                {% else %}
-                                <p>
-                                    <span class="material-symbols-outlined">
-                                        <input type="submit" value="thumb_down">
-                                    </span>
-                                </p>
-                                {% endif %}
-                                <input type="hidden" name="dislike_button" value="{{post.id}}">
-                            </form>
-                        {% endif %}
-                    </div>
                     <div class="button_like buttons_space">
                         {% if current_user.is_authenticated %}
                             <form action="{{ url_for('like_result', pk=post.id) }}" method="post">
@@ -43,6 +23,26 @@
                                 </p>
                                 {% endif %}
                                 <input type="hidden" name="like_button" value="{{post.id}}">
+                            </form>
+                        {% endif %}
+                    </div>
+                    <div class="button_dislike buttons_space">
+                        {% if current_user.is_authenticated %}
+                            <form action="{{ url_for('dislike_result', pk=post.id) }}" method="post">
+                                {% if dislike.query.filter_by(post_dislike=post.id, user_dislike=current_user.id).first(): %}
+                                <p>
+                                    <span class="material-symbols-rounded">
+                                        <input type="submit" value="thumb_down">
+                                    </span>
+                                </p>
+                                {% else %}
+                                <p>
+                                    <span class="material-symbols-outlined">
+                                        <input type="submit" value="thumb_down">
+                                    </span>
+                                </p>
+                                {% endif %}
+                                <input type="hidden" name="dislike_button" value="{{post.id}}">
                             </form>
                         {% endif %}
                     </div>
