@@ -52,11 +52,15 @@ body {
 }
 
 .button_dislike {
-  float:left; 
+  float:right; 
   width:50%;
 }
 
 .button_like {
-  float:right;
+  float:left;
   width:50%;
 }
+/* 
+.png {
+  width="500" height="600"
+} */
