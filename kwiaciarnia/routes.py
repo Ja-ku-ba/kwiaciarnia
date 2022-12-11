@@ -46,10 +46,14 @@ def add_photo(id, folder_name):
 
 @app.route("/")
 def home():
-    all_posts = Posts.query.all()
+    all_posts = Posts.query.order_by(Posts.id.desc())
     likes = Post_likes()
     dislike = Post_dislikes()
     return render_template('home.html', all_posts=all_posts, likes=likes, dislike=dislike)
+
+# User.query.order_by(User.popularity.desc()).limit(10).all()
+
+
 
 @app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
@@ -141,6 +145,12 @@ def products_categories():
     products_to_sale_id = Products.query.group_by(Products.category).all()
     return render_template('products_categories.html', products_to_sale_category=products_to_sale_category, products_to_sale_id=products_to_sale_id)
 
+@app.route('/oferta/<cat_name>')
+def products(cat_name):
+    products = Products.query.all()
+    products_category = Product_category.query.filter_by(name=cat_name).first()
+    return render_template('products.html', products=products, products_category=products_category)
+
 def check_if_category_exist(name):
     if Product_category.query.filter_by(name=name).first() is not None:
         category_id = Product_category.query.filter_by(name=name).first()
@@ -172,7 +182,7 @@ def add_product():
 
 @app.route('/kotakt')
 def contact():
-    return render_template('contact.html')
+    return render_template('produkt.html')
 
 @app.route('/zarejestruj', methods=['GET', 'POST'])
 def register():

@@ -15,6 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kwiaciarnia.db'
 app.config['SECRET_KEY'] = '?D(G+KbPeShVmYq3'
 
 db = SQLAlchemy(app)
+# app = Flask(static_folder='C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads')
 
 
 UPLOAD_FOLDER_POSTS = 'kwiaciarnia/static/uploads/posts'

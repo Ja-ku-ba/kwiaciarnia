@@ -1,27 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-<img class="card-img-top" src="static\uploads\products\18.png" >
-<div>
-
-    <div class="scrollmenu">
-        {% for product in products_to_sale %}
-            <div class="card"  style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">{{product.name}}</h5>
-                    <p class="card-text">{{product.description}}</p>
-                    <a href="#" class="btn btn-info">{{product.price}}</a>
-                </div>
-            </div>
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="..." alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title">{{product.name}}</h5>
-                  <p class="card-text">{{product.description}}</p>
-                  <a href="#" class="btn btn-primary">{{product.price}}</a>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+{% for product in products %}
+{% if product.category == products_category.id %}
+<h3>{{product.id}}</h3>
+<img src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}">
+<hr>
+{% endif %}
+{% endfor %}
 {% endblock %}
-
