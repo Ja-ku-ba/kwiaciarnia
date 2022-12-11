@@ -25,13 +25,13 @@ body {
   }
 }
 
-#scrolly {
+.scrolly {
   display: flex;
   flex-wrap: wrap;
   padding: 5px;
 }
 
-#scrolly > div {
+.scrolly > div {
   background-color: #f1f1f1;
   width: 100px;
   margin: 10px;
