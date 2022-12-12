@@ -145,9 +145,9 @@ def products_categories():
     products_to_sale_id = Products.query.group_by(Products.category).all()
     return render_template('products_categories.html', products_to_sale_category=products_to_sale_category, products_to_sale_id=products_to_sale_id)
 
-@app.route('/oferta/<cat_name>')
-def products(cat_name):
-    products = Products.query.all()
+@app.route('/oferta/<cat_name>/<id>')
+def products(cat_name, id):
+    products = Products.query.filter_by(category=id).all()
     products_category = Product_category.query.filter_by(name=cat_name).first()
     return render_template('products.html', products=products, products_category=products_category)
 
@@ -182,7 +182,7 @@ def add_product():
 
 @app.route('/kotakt')
 def contact():
-    return render_template('produkt.html')
+    return render_template('contact.html')
 
 @app.route('/zarejestruj', methods=['GET', 'POST'])
 def register():

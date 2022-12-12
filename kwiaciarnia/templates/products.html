@@ -1,10 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
-{% for product in products %}
-{% if product.category == products_category.id %}
-<h3>{{product.id}}</h3>
-<img src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}">
-<hr>
-{% endif %}
-{% endfor %}
+<div class="scrollmenu scrolly">
+  {% for product in products %}
+    <div class="card max-height padding-btm" style="width: 18rem;">
+      {% if product.category == products_category.id %}
+        <img class="card-img-top card-colour" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
+      {% endif %}
+      <div class="card-body padding-btm">
+        <h4 class="card-title">{{product.name}}</h4>
+        <h6 class="card-text">{{product.description|truncate(50)}}</h6>
+       
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+          Launch demo modal
+        </button>
+       
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">{{product.name}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                {{product.id.description}}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}
+

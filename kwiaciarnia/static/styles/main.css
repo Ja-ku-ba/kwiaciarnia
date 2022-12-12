@@ -15,6 +15,20 @@
   z-index: 1;
 }
 
+.card-changes { 
+  background-color: #C00404;
+  height: 15rem;
+  width: 500;
+}
+
+#error {
+  width: 286;
+  height: auto;
+  background-color: #C00404;
+  margin-top: 68.75px;
+  margin-bottom: 68.75px;
+}
+
 body {
   background-color: #f5ebeb;
 }
@@ -42,6 +56,14 @@ body {
   margin-right: auto;
 }
 
+max-height {
+  max-height: fit-content;
+}
+
+padding-btm{
+  padding-bottom: 0;
+}
+
 #feed_spacer {
   padding-bottom: 15px;
 }
@@ -60,7 +82,13 @@ body {
   float:left;
   width:50%;
 }
-/* 
-.png {
-  width="500" height="600"
-} */
+
+#logo {
+  width: auto;
+  height: 30px;
+}
+
+.card-img-top {
+  width: 286px;
+  height: 190px;
+}

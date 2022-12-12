@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="scrollmenu scrolly">
+  {% block content %}
+  <div class="scrollmenu scrolly">
     {% for product in products_to_sale_category %}
-        <a href="{{ url_for('products', cat_name=product.name) }}">
+        <a href="{{ url_for('products', cat_name=product.name, id=product.id) }}">
             <div class="card"  style="width: 18rem;">
                 {% for prd in products_to_sale_id %}
                     {% if prd.category == product.id %}
-                        <img class="card-img-top png" src="static\uploads\products\{{prd.id}}.png" alt="{{product.name}}" style="height: 15rem; width: 500;">
+                        <img class="card-img-top card-changes" src="static\uploads\products\{{prd.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
                     {% endif %}
                 {% endfor %}
-                    <a href="#" class="btn btn-muted">{{product.name}}</a>
+                <a href="#" class="btn btn-muted">{{product.name}}</a>
             </div>
         </a>
     {% endfor %}
-</div>
+  </div>
 {% endblock %}
