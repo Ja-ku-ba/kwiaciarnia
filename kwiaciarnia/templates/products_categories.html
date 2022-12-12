@@ -6,7 +6,7 @@
             <div class="card"  style="width: 18rem;">
                 {% for prd in products_to_sale_id %}
                     {% if prd.category == product.id %}
-                        <img class="card-img-top img-size" src="static\uploads\products\{{prd.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
+                        <img class="card-img-top img-size" src="static\uploads\products\{{prd.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';">
                     {% endif %}
                 {% endfor %}
                 <a href="#" class="btn btn-muted">{{product.name}}</a>

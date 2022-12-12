@@ -4,7 +4,7 @@
   {% for product in products %}
     <div class="card max-height padding-btm" style="width: 18rem;">
       {% if product.category == products_category.id %}
-        <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
+        <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.{% include  'includes/filler.html' %}">
       {% endif %}
       <div class="card-body padding-btm">
         <h4 class="card-title">{{product.name}}</h4>
@@ -26,7 +26,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
+                <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.href='{{url_for(templates/includes/filler.html)}}'">
                 <br>
                 <h6>{{product.description}}</h6>
               </div>
@@ -36,21 +36,26 @@
 
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal-{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade modal-pos" id="exampleModal-{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{product.id}}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">{{product.name}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
                       <div class="modal-body">
-                        ...
+                        <h6>Aby dokonać realizacji zamówienia podaj numer telefonu pod którym możemy się skontaktować z tobą w celu finalizacji zamówienia.</h6>
+                        <form type="POST">
+                          <input type="text" required name="phone-number">
+                          <input type="submit" class="btn btn-primary" value="Potwierdź zakup">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                        </form>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                        <button type="button" class="btn btn-primary">Potwierdź zakup</button>
+                        
+                        
                       </div>
                     </div>
                   </div>
