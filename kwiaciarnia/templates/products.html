@@ -4,17 +4,19 @@
   {% for product in products %}
     <div class="card max-height padding-btm" style="width: 18rem;">
       {% if product.category == products_category.id %}
-        <img class="card-img-top card-colour" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
+        <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
       {% endif %}
       <div class="card-body padding-btm">
         <h4 class="card-title">{{product.name}}</h4>
         <h6 class="card-text">{{product.description|truncate(50)}}</h6>
        
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-          Launch demo modal
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Modal-MoreInfo-{{ product.id }}">
+          Więcej informacji
         </button>
-       
-        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+
+        <!-- Modal -->
+        <div class="modal fade" id="Modal-MoreInfo-{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -24,11 +26,13 @@
                 </button>
               </div>
               <div class="modal-body">
-                {{product.id.description}}
+                <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/logo.png';id='error'">
+                <br>
+                <h6>{{product.description}}</h6>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-info" data-dismiss="modal">Kup</button>
+                <button type="button" class="btn btn-secondary">Zamknij</button>
               </div>
             </div>
           </div>
