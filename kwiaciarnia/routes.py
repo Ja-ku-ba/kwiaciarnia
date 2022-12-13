@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS, UPLOAD_FOLDER_PRODUCTS
-from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm, OrderForm
+from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category, Orders
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
@@ -122,17 +122,6 @@ def add_post():
         add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
         return redirect(url_for('home'))
     return render_template('add_post.html', form=form)
-
-@app.route('/usun_post/<int:id>', methods=['GET', 'POST'])
-@login_required
-def delete_post(id):
-    post = Posts.query.filter_by(id=id).first()
-    if request.method == "POST":
-        db.session.delete(post)
-        db.session.commit()
-        os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/posts/{id}.png")
-        return redirect(url_for('home'))
-    return render_template('delete/delete_post_comfirmation.html', post=post)
  
 @app.route('/oferta')
 def products_categories():
@@ -144,7 +133,6 @@ def products_categories():
 def products(cat_name, id):
     products = Products.query.filter_by(category=id).all()
     products_category = Product_category.query.filter_by(name=cat_name).first()
-    form = OrderForm()
     if request.method == "POST":
         new_order = Orders(
             phone_number = request.form["phone-number"],
@@ -153,7 +141,7 @@ def products(cat_name, id):
         db.session.add(new_order)
         db.session.commit()
         return redirect(url_for("home"))
-    return render_template('products.html', products=products, products_category=products_category, form=form)
+    return render_template('products.html', products=products, products_category=products_category)
 
 def check_if_category_exist(name):
     if Product_category.query.filter_by(name=name).first() is not None:
@@ -234,6 +222,20 @@ def manage_posts():
     posts = Posts.query.order_by(Posts.id.desc())
     return render_template('manage/manage_posts.html', posts=posts)
 
+@app.route('/usun_post/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_post(id):
+    post = Posts.query.filter_by(id=id).first()
+    if request.method == "POST":
+        db.session.delete(post)
+        db.session.commit()
+        try:
+            os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/posts/{id}.png")
+        except:
+            return redirect(url_for('manage_posts'))
+        return redirect(url_for('manage_posts'))
+    return render_template('delete/delete_post_comfirmation.html', post=post)
+
 @app.route("/zarządzaj/produkty")
 def manage_products():
     products = Products.query.order_by(Products.id.desc())
@@ -243,10 +245,19 @@ def manage_products():
 @login_required
 def delete_product(id):
     product = Products.query.filter_by(id=id).first()
+    cat = Product_category.query.filter_by(id=product.category).first()
+
     if request.method == "POST":
         db.session.delete(product)
         db.session.commit()
-        os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/products/{id}.png")
-        return redirect(url_for('home'))
-    return render_template('delete/delete_post_comfirmation.html', product=product)
+        delete_category = Products.query.filter_by(category=cat.id).first()
+        if delete_category is None:
+            db.session.delete(cat)
+            db.session.commit()
+        try:
+            os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/products/{id}.png")
+        except:
+            return redirect(url_for('manage_products'))
+        return redirect(url_for('manage_products'))
+    return render_template('delete/delete_product_comfirmation.html', product=product)
  

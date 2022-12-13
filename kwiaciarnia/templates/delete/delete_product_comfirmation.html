@@ -1,17 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}
-<title>Usuń post</title>
+<title>Usuń product</title>
 {% endblock %}
 {% block content %}
 {% if current_user.is_admin %}
 <div>
-    <h1>Czy na pewno chcesz usunąć ten post?</h1>
-    <h3>{{product.name}}</h3>
-    <h5>{{product.price}}</h5>
-    <img src="static\uploads\product\{{product.id}}.png" alt="{{product.name}}">
+    <h1>Czy na pewno chcesz usunąć ten produkt?</h1>
+    <div id="feed">
+        <div class="card" style="width: 35rem;">
+            <img class="card-img-top" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/filler.png';">
+            <div class="card-body">
+                <h3 class="card-title">{{product.name}}</h3>
+                <p class="card-text">{{product.description}}</p>
+                <small>{{product.price}}</small>
+            </div>
+        </div>
+    </div>
     <form method="post">
         <input type="submit" value="Usuń">        
     </form>
 </div>
+<div id="feed_spacer"></div>
 {% endif %}
 {% endblock %}

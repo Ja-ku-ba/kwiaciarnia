@@ -26,7 +26,3 @@ class AddProductForm(FlaskForm):
     description = StringField(label="Opis: ", validators=[DataRequired()])
     price = FloatField(label='Cena (xx.xx):', validators=[DataRequired()])
     submit = SubmitField(label="Dodaj")
-
-class OrderForm(FlaskForm):
-    phone_number = StringField(label='Numer telefonu: ', validators=[DataRequired()])
-    submit = SubmitField(label="Zamów")
