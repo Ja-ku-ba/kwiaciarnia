@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Usuń post</title>
+{% endblock %}
+{% block content %}
+{% if current_user.is_admin %}
+<div>
+    <h1>Czy na pewno chcesz usunąć ten post?</h1>
+    <div id="feed">
+        <div class="card" style="width: 35rem;">
+            <img class="card-img-top" src="/static/uploads/posts/{{post.id}}.png" alt="{{post.tittle}}">
+            <div class="card-body">
+                <h3 class="card-title">{{post.title}}</h3>
+                <p class="card-text">{{post.body}}</p>
+            </div>
+        </div>
+    </div>
+    <form method="post">
+        <input type="submit" value="Usuń">        
+    </form>
+</div>
+{% endif %}
+{% endblock %}
