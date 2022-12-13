@@ -132,7 +132,7 @@ def delete_post(id):
         db.session.commit()
         os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/posts/{id}.png")
         return redirect(url_for('home'))
-    return render_template('delete_post_comfirmation.html', post=post)
+    return render_template('delete/delete_post_comfirmation.html', post=post)
  
 @app.route('/oferta')
 def products_categories():
@@ -238,3 +238,15 @@ def manage_posts():
 def manage_products():
     products = Products.query.order_by(Products.id.desc())
     return render_template('manage/manage_products.html', products=products)
+
+@app.route('/usun_produkt/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_product(id):
+    product = Products.query.filter_by(id=id).first()
+    if request.method == "POST":
+        db.session.delete(product)
+        db.session.commit()
+        os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/products/{id}.png")
+        return redirect(url_for('home'))
+    return render_template('delete/delete_post_comfirmation.html', product=product)
+ 
