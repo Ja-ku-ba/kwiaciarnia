@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS, UPLOAD_FOLDER_PRODUCTS
-from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
-from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category
+from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm, OrderForm
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category, Orders
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
 import urllib.request                                                                               #without that u r unable to create/edit db
@@ -30,7 +30,6 @@ def allowed_file(filename):
 def name_changer(id):
     return str(id) + '.png'
 def add_photo(id, folder_name):
-    print("OKINAWA")
     if request.method == "POST":
         if 'file' not in request.files:
             print("nie przesłano pliku")
@@ -50,10 +49,6 @@ def home():
     likes = Post_likes()
     dislike = Post_dislikes()
     return render_template('home.html', all_posts=all_posts, likes=likes, dislike=dislike)
-
-# User.query.order_by(User.popularity.desc()).limit(10).all()
-
-
 
 @app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
@@ -145,11 +140,20 @@ def products_categories():
     products_to_sale_id = Products.query.group_by(Products.category).all()
     return render_template('products_categories.html', products_to_sale_category=products_to_sale_category, products_to_sale_id=products_to_sale_id)
 
-@app.route('/oferta/<cat_name>/<id>')
+@app.route('/oferta/<cat_name>/<id>', methods=["GET", "POST"])
 def products(cat_name, id):
     products = Products.query.filter_by(category=id).all()
     products_category = Product_category.query.filter_by(name=cat_name).first()
-    return render_template('products.html', products=products, products_category=products_category)
+    form = OrderForm()
+    if request.method == "POST":
+        new_order = Orders(
+            phone_number = request.form["phone-number"],
+            product = request.form["product"]
+        )
+        db.session.add(new_order)
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template('products.html', products=products, products_category=products_category, form=form)
 
 def check_if_category_exist(name):
     if Product_category.query.filter_by(name=name).first() is not None:

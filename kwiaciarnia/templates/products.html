@@ -47,11 +47,15 @@
                       </div>
                       <div class="modal-body">
                         <h6>Aby dokonać realizacji zamówienia podaj numer telefonu pod którym możemy się skontaktować z tobą w celu finalizacji zamówienia.</h6>
-                        <form type="POST">
-                          <input type="text" required name="phone-number">
-                          <input type="submit" class="btn btn-primary" value="Potwierdź zakup">
+
+                        <!-- Form to make an oreder -->
+                        <form method="POST">
+                          <input type="text" name="phone-number">
+                          <input type="hidden" value="{{product.id}}" name="product">
+                          <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{ product.id }}" value="Potwierdź zakup">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
                         </form>
+
                       </div>
                       <div class="modal-footer">
                         

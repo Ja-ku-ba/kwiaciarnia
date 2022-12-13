@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FloatField
+from wtforms import StringField, PasswordField, SubmitField, FloatField, HiddenField
 from wtforms.validators import Length, EqualTo, DataRequired, Email, ValidationError
 
 class PostForm(FlaskForm):
@@ -26,3 +26,7 @@ class AddProductForm(FlaskForm):
     description = StringField(label="Opis: ", validators=[DataRequired()])
     price = FloatField(label='Cena (xx.xx):', validators=[DataRequired()])
     submit = SubmitField(label="Dodaj")
+
+class OrderForm(FlaskForm):
+    phone_number = StringField(label='Numer telefonu: ', validators=[DataRequired()])
+    submit = SubmitField(label="Zamów")
