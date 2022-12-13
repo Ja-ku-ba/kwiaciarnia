@@ -225,7 +225,16 @@ def logout():
 def invalid_route(e):
     return render_template('404.html')
 
-@app.route('/manage')
+@app.route('/zarządzaj')
 def manage():
-    posts = Posts.query.all()
-    return render_template('manage.html', posts=posts)
+    return render_template('manage/manage.html')
+
+@app.route("/zarządzaj/posty")
+def manage_posts():
+    posts = Posts.query.order_by(Posts.id.desc())
+    return render_template('manage/manage_posts.html', posts=posts)
+
+@app.route("/zarządzaj/produkty")
+def manage_products():
+    products = Products.query.order_by(Products.id.desc())
+    return render_template('manage/manage_products.html', products=products)

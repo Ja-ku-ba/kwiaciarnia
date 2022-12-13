@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Zarządzanie stroną: Admin</title>
+{% endblock %}
+{% block content %}
+<div>
+    {% for product in products %}
+        <a>{{product.name}}:</a><span> {{product.price}}|</a><a href="#"> Usuń produkt</a>
+        <hr>
+    {% endfor %}
+</div>
+{% endblock %}

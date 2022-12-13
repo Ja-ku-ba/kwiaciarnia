@@ -50,7 +50,7 @@
 
                         <!-- Form to make an oreder -->
                         <form method="POST">
-                          <input type="text" name="phone-number">
+                          <input type="text" name="phone-number" required>
                           <input type="hidden" value="{{product.id}}" name="product">
                           <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{ product.id }}" value="Potwierdź zakup">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>

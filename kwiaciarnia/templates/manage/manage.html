@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Zarządzanie stroną: Admin</title>
+{% endblock %}
+{% block content %}
+<div>
+    <a href="{{url_for('manage_products')}}">Zarządzaj produktami</a>
+    <br>
+    <a href="{{url_for('manage_posts')}}">Zarządzaj postami</a>
+    <br>
+    <a href="#">Zarządzaj kategoriami</a>
+</div>
+{% endblock %}
