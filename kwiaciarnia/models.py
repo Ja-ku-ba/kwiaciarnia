@@ -56,3 +56,11 @@ class Products(db.Model):
     name = db.Column(db.String(), unique=True)
     description = db.Column(db.String())
     price = db.Column(db.Integer())
+
+class Orders(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    product = db.Column(db.Integer(), db.ForeignKey('products.id'))
+    phone_number = db.Column(db.String())
+
+    def __repr__(self):
+        return self.phone_number()
