@@ -8,11 +8,11 @@ import urllib.request                                                           
 from werkzeug.utils import secure_filename
 import os 
 
-# #   oK5XKfRTkmBZShUafzZF
-# @app.route('/oK5XKfRTkmBZShUafzZF')
-# def stworz():
-#     db.create_all()
-#     return "baza danych stworzona"
+#   oK5XKfRTkmBZShUafzZF
+@app.route('/oK5XKfRTkmBZShUafzZF')
+def stworz():
+    db.create_all()
+    return "baza danych stworzona"
 
 # #   BZDbQm7C2thGaocmuCWJ
 # @app.route('/BZDbQm7C2thGaocmuCWJ')
