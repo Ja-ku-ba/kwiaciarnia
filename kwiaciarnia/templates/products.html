@@ -4,7 +4,7 @@
   {% for product in products %}
     <div class="card max-height padding-btm" style="width: 18rem;">
       {% if product.category == products_category.id %}
-        <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.{% include  'includes/filler.html' %}">
+        <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/flller.png';">
       {% endif %}
       <div class="card-body padding-btm">
         <h4 class="card-title">{{product.name}}</h4>
@@ -26,7 +26,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.href='{{url_for(templates/includes/filler.html)}}'">
+                <img class="card-img-top card-colour img-size" src="/static/uploads/products/{{product.id}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/flller.png';">
                 <br>
                 <h6>{{product.description}}</h6>
               </div>
