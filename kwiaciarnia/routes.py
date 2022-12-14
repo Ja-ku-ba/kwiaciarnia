@@ -8,11 +8,11 @@ import urllib.request                                                           
 from werkzeug.utils import secure_filename
 import os 
 
-#   oK5XKfRTkmBZShUafzZF
-@app.route('/oK5XKfRTkmBZShUafzZF')
-def stworz():
-    db.create_all()
-    return "baza danych stworzona"
+# #   oK5XKfRTkmBZShUafzZF
+# @app.route('/oK5XKfRTkmBZShUafzZF')
+# def stworz():
+#     db.create_all()
+#     return "baza danych stworzona"
 
 # #   BZDbQm7C2thGaocmuCWJ
 # @app.route('/BZDbQm7C2thGaocmuCWJ')
@@ -260,4 +260,22 @@ def delete_product(id):
             return redirect(url_for('manage_products'))
         return redirect(url_for('manage_products'))
     return render_template('delete/delete_product_comfirmation.html', product=product)
- 
+
+@app.route('/zarządzaj/kategorie', methods=["GET", "POST"])
+def manage_categories():
+    categories = Product_category.query.all()
+    if request.method == "POST":
+        try:
+            if request.form["new-category-name"]:
+                current_category = Product_category.query.filter_by(id=request.form["old-name-id"]).first()
+                current_category.name = request.form["new-category-name"]
+                db.session.commit() 
+                return redirect(url_for("products_categories"))
+        except:
+            if request.form["delete-category"]:
+                Products.query.filter_by(category=request.form["delete-category"]).delete()
+                current_category = Product_category.query.filter_by(id=request.form["delete-category"]).first()
+                db.session.delete(current_category)
+                db.session.commit()
+                return redirect(url_for("products_categories"))
+    return render_template('manage/manage_categories.html', categories=categories)
