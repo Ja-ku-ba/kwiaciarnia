@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Zarządzanie stroną: Admin</title>
+{% endblock %}
+{% block content %}
+<div>
+    {% for category in categories %}
+        <a>{{category.name}}</a> | <button type="button" class="btn btn-link" data-toggle="modal" data-target="#exampleModal-{{category.id}}">
+            Zmień nazwę
+          </button>
+          
+          <!-- Modal -->
+          <div class="modal" id="exampleModal-{{category.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{category.name}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <label class="modal-body">
+                  Wprowadź nową nazwę
+                </label>
+                <form method="post">
+                  <input type="text" name="new-category-name">
+                  <div class="spacer"></div><br>
+                  <button type="submit" class="btn btn-primary">Potwierdź</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                </form>
+                <div class="spacer"></div>
+              </div>
+            </div>
+          </div> | 
+          
+          <!-- Modal -->
+          <button type="button" class="btn btn-link" data-toggle="modal" data-target="#exampleModal-delete-{{category.id}}">
+            Usuń kategorię
+          </button>
+          <div class="modal" id="exampleModal-delete-{{category.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Usuń kategorię: {{category.name}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Usunięcie kategori spowoduje usunięcie wszystkich produktów przypisanych do kategorii.
+                </div>
+                <form method="POST">
+                    <input type="hidden" name="delete-category" value="{{category.id}}">
+                    <div class="spacer"></div><br>
+                    <button type="submit" class="btn btn-primary">Potwierdź</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                </form>
+                <div class="spacer"></div>
+              </div>
+            </div>
+          </div>
+        <hr>
+    {% endfor %}
+</div>
+{% endblock %}

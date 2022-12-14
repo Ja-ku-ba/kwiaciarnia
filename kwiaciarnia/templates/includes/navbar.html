@@ -14,13 +14,7 @@
         </li>
         {% if current_user.is_admin %}
             <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('add_post') }}">Dodaj post</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href='{{ url_for("add_product") }}'>Dodaj produkt</a>
-            </li>
-            <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('manage') }}">Zarządzaj stroną</a>
+                <a class="nav-link" href="{{ url_for('manage') }}">Zarządzaj stroną</a>
             </li>
         {% endif %}
         {% if current_user.is_authenticated  %}
