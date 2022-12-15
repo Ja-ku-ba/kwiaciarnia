@@ -12,7 +12,7 @@
        
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Modal-MoreInfo-{{ product.id }}">
-          Więcej informacji
+          Kup: {{product.price}}zł
         </button>
 
         <!-- Modal -->
@@ -50,9 +50,10 @@
 
                         <!-- Form to make an oreder -->
                         <form method="POST">
-                          <input type="text" name="phone-number" required>
-                          <input type="hidden" value="{{product.id}}" name="product">
-                          <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{ product.id }}" value="Potwierdź zakup">
+                          {{form.hidden_tag()}}
+                          <input type="hidden" value="{{product.id}}" name="product_id">
+                          {{form.phone_number.label()}} {{form.phone_number}}
+                          <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{ product.id }}" value='{{form.submit}}'>Potwierdź zakup</button>
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
                         </form>
 

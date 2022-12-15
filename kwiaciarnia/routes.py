@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS, UPLOAD_FOLDER_PRODUCTS
-from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm, SocialMediaForm, ContactForm, AdresForm
+from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm, BuyForm, SocialMediaForm, ContactForm, AdresForm
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category, Orders, Contact, SocialMedia, Adres
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
@@ -123,6 +123,8 @@ def add_post():
         add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
         flash('Post został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
+    elif not form.validate_on_submit():
+        flash('Coś poszło nie tak', category='info')
     return render_template('add_post.html', form=form)
  
 @app.route('/oferta')
@@ -135,15 +137,19 @@ def products_categories():
 def products(cat_name, id):
     products = Products.query.filter_by(category=id).all()
     products_category = Product_category.query.filter_by(name=cat_name).first()
-    if request.method == "POST":
+    form = BuyForm()
+    if form.validate_on_submit():
         new_order = Orders(
-            phone_number = request.form["phone-number"],
-            product = request.form["product"]
+            phone_number = form.phone_number.data,
+            product = request.form["product_id"]
         )
         db.session.add(new_order)
         db.session.commit()
+        flash('Oczekuj na połączenie od naszego pracownika', category='success')
         return redirect(url_for("home"))
-    return render_template('products.html', products=products, products_category=products_category)
+    elif not form.validate_on_submit():
+        flash('Coś poszło nie tak', category='info')
+    return render_template('products.html', products=products, products_category=products_category, form=form)
 
 def check_if_category_exist(name):
     if Product_category.query.filter_by(name=name).first() is not None:
@@ -172,6 +178,8 @@ def add_product():
         add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
         flash('Proodukt został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
+    elif not form.validate_on_submit():
+        flash('Coś poszło nie tak', category='info')
     return render_template('add_product.html', form=form)
 
 @app.route('/zarejestruj', methods=['GET', 'POST'])
@@ -187,7 +195,7 @@ def register():
         db.session.commit()
         login_user(new_user)
         return redirect(url_for('home'))
-    else:
+    elif not form.validate_on_submit():
         flash('Wprowadzono niepoprawne hasł0, lub nazwa użytkownika jest już zajęta', category='info')
     return render_template('register.html', form=form)
 
@@ -202,6 +210,8 @@ def login():
             return redirect(url_for("home"))
         else:
             flash('Nazwa użytkownika lub hasło zostało wprowadzne niepoprawnie', category='danger')
+    elif not form.validate_on_submit():
+        flash('Coś poszło nie tak', category='info')
     return render_template('login.html', form=form)
 
 @app.route("/wuloguj")

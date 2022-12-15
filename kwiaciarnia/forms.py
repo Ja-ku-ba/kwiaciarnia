@@ -7,7 +7,6 @@ class PostForm(FlaskForm):
     body = StringField(label="Treść postu: ", validators=[DataRequired()])
     submit = SubmitField(label="Potwierdź")
 
-
 class UserForm(FlaskForm):
     username = StringField(label="Nazwa użytkownika: ", validators=[Length(min=4, max=32), DataRequired()])
     email = StringField(label='Aadres email: ', validators=[Email(), DataRequired()])
@@ -26,6 +25,11 @@ class AddProductForm(FlaskForm):
     description = StringField(label="Opis: ", validators=[DataRequired()])
     price = FloatField(label='Cena (xx.xx):', validators=[DataRequired()])
     submit = SubmitField(label="Dodaj")
+
+class BuyForm(FlaskForm):
+    phone_number = StringField(label="Numer telefonu: ", validators=[Length(min=9, max=12), DataRequired()])
+    submit = SubmitField(label="Potwierdź zakup")
+
 
 class SocialMediaForm(FlaskForm):
     social_media_link = StringField(label="Link: ", validators=[DataRequired()])
