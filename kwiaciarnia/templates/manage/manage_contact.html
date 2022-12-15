@@ -21,12 +21,14 @@
         </div>
         <div class="modal-body">
             <form method="POST">
-                <input type="text" name="addres">
-                <br>
-                <div class="feed_spacer"></div>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                <button type="submit" class="btn btn-primary">Dodaj</button>
+              {{ addres_form.hidden_tag() }}
+              <label>{{addres_form.addres.label()}} </label>
+              {{addres_form.addres}}
+              <br>
+              <button type="submit" class="btn btn-primary" value='{{addres_form.submit}}'>Potwierdź</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
             </form>
+            <div class="feed_spacer"></div>
         </div>
       </div>
     </div>
@@ -48,15 +50,18 @@
           </button>
         </div>
         <div class="modal-body">
-            <form method="POST">
-                <label>Posiadacz: </label><input type="text" name="owner">
-                <br>
-                <label>Numer: </label><input type="text" name="number">
-                <br>
-                <div class="feed_spacer"></div>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                <button type="submit" class="btn btn-primary">Dodaj</button>
-            </form>
+          <form method="POST">
+              {{ contact_form.hidden_tag() }}
+              <label>{{contact_form.phone_number.label()}} </label>
+              {{contact_form.phone_number}}
+              <br>
+              <label>{{contact_form.number_owner.label()}} </label>
+              {{contact_form.number_owner}}
+              <br>
+              <button type="submit" class="btn btn-primary" value='{{contact_form.submit}}'>Potwierdź</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+          </form>
+          <div class="feed_spacer"></div>
         </div>
       </div>
     </div>
@@ -78,25 +83,33 @@
           </button>
         </div>
         <div class="modal-body">
-            <form method="POST">
-                <input type="text" name="link">
-                <br>
-                <div class="feed_spacer"></div>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                <button type="submit" class="btn btn-primary">Dodaj</button>
-            </form>
+          <form method="POST">
+            {{ socials_form.hidden_tag() }}
+            <label>{{socials_form.social_media_link.label()}} </label>
+            {{socials_form.social_media_link}}
+            <br>
+            <button type="submit" class="btn btn-primary" value='{{socials_form.submit}}'>Potwierdź</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+          </form>
+        <div class="feed_spacer"></div>
         </div>
       </div>
     </div>
   </div>
+  <hr>
     {% for addres in data_addres %}
-        <p>{{addres.addres}}</p>
+        <a>{{addres.addres}}</a>
+        <br>
     {% endfor %}
+    <hr>
     {% for number in data_contact %}
-        <p>{{number.number_owner}}: {{number.phone_number}}</p>
+        <a>{{number.number_owner}}: {{number.phone_number}}</a>
+        <br>
     {% endfor %}
+    <hr>
     {% for social in data_socials %}
-        <a>{{ social.social_media_links }}</a>
+        <a>{{ social.social_media_link }}</a>
+        <br>
     {% endfor %}
 </div>
 {% endblock %}

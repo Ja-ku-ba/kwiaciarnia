@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FloatField, HiddenField
+from wtforms import StringField, PasswordField, SubmitField, FloatField, IntegerField
 from wtforms.validators import Length, EqualTo, DataRequired, Email, ValidationError
 
 class PostForm(FlaskForm):
@@ -25,4 +25,17 @@ class AddProductForm(FlaskForm):
     name = StringField(label="Nazwa: ", validators=[DataRequired()])
     description = StringField(label="Opis: ", validators=[DataRequired()])
     price = FloatField(label='Cena (xx.xx):', validators=[DataRequired()])
+    submit = SubmitField(label="Dodaj")
+
+class SocialMediaForm(FlaskForm):
+    social_media_link = StringField(label="Link: ", validators=[DataRequired()])
+    submit = SubmitField(label="Dodaj")
+
+class ContactForm(FlaskForm):
+    phone_number = IntegerField(label="Numer telefonu: ", validators=[DataRequired()])
+    number_owner = StringField(label="Właściciel: ", validators=[DataRequired()])
+    submit = SubmitField(label="Dodaj")
+    
+class AdresForm(FlaskForm):
+    addres = StringField(label="Adres: ", validators=[DataRequired()])
     submit = SubmitField(label="Dodaj")

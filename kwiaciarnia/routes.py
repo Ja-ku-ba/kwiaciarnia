@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS, UPLOAD_FOLDER_PRODUCTS
-from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
+from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm, SocialMediaForm, ContactForm, AdresForm
 from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category, Orders, Contact, SocialMedia, Adres
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
@@ -202,8 +202,6 @@ def login():
             return redirect(url_for("home"))
         else:
             flash('Nazwa użytkownika lub hasło zostało wprowadzne niepoprawnie', category='danger')
-    else:
-        flash('Pojawił się błąd', category='info')
     return render_template('login.html', form=form)
 
 @app.route("/wuloguj")
@@ -295,36 +293,37 @@ def manage_categories():
 @app.route('/zarządzaj kontakt', methods=["GET", "POST"])
 def manage_contact():
     data_contact = Contact.query.all()
+    contact_form = ContactForm()
     data_socials = SocialMedia.query.all()
+    socials_form = SocialMediaForm()
     data_addres = Adres.query.all()
+    addres_form = AdresForm()
+
     if request.method == "POST":
-        try:
-            if request.form["addres"]:
-                new_addres = Adres(
-                    addres = request.form["addres"]
-                )
-                db.session.add(new_addres)
-        except:
-            pass
-        try:
-            if request.form["number"]:
-                new_number = Contact(
-                    phone_number = request.form["number"],
-                    number_owner = request.form["owner"]
-                )
-                db.session.add(new_number)
-        except:
-            pass
-        try:
-            if request.form["link"]:
-                new_link = SocialMedia(
-                    social_media_link = request.form["link"]
-                )
-                db.session.add(new_link)
-        except:
-            pass
+        if addres_form.validate_on_submit():
+            new_addres = Adres(
+                addres = addres_form.addres.data
+            )
+            flash('Adres został pomyślnie dodany', category='info')
+            db.session.add(new_addres)
+        elif contact_form.validate_on_submit():
+            new_number = Contact(
+                phone_number = contact_form.phone_number.data,
+                number_owner = contact_form.number_owner.data
+            )
+            flash('Numer został pomyślnie dodany', category='info')
+            db.session.add(new_number)
+        elif socials_form.validate_on_submit():
+            new_link = SocialMedia(
+                social_media_link = socials_form.social_media_link.data
+            )
+            flash('Link został pomyślnie dodany', category='info')
+            db.session.add(new_link)
+        else:
+            flash('Co poszło nie tak', category='danger')
         db.session.commit()
-    return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres)
+        return redirect(url_for("manage_contact"))
+    return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres, contact_form=contact_form, socials_form=socials_form, addres_form=addres_form)
 
 @app.route('/kotakt')
 def contact():
