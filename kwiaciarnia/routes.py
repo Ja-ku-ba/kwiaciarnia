@@ -1,20 +1,20 @@
 from flask import render_template, redirect, url_for, request, flash
 from kwiaciarnia import app, db, ALLOWED_EXTENSIONS, UPLOAD_FOLDER_POSTS, UPLOAD_FOLDER_PRODUCTS
 from kwiaciarnia.forms import PostForm, UserForm, Loginform, AddProductForm
-from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category, Orders
+from kwiaciarnia.models import Posts, User, Post_likes, Post_dislikes, Products, Product_category, Orders, Contact, SocialMedia, Adres
 from flask_login import login_user, logout_user, login_required, current_user
 import datetime
 import urllib.request                                                                               #without that u r unable to create/edit db
 from werkzeug.utils import secure_filename
 import os 
 
-# #   oK5XKfRTkmBZShUafzZF
+# #   oK5XKfRTkmBZShUafzZF                                                                            #updating db
 # @app.route('/oK5XKfRTkmBZShUafzZF')
 # def stworz():
 #     db.create_all()
-#     return "baza danych stworzona"
+#     return "db updated"
 
-# #   BZDbQm7C2thGaocmuCWJ
+# #   BZDbQm7C2thGaocmuCWJ                                                                          #adding new admin
 # @app.route('/BZDbQm7C2thGaocmuCWJ')
 # def admin():
 #     new_admin = User.query.filter_by(id=current_user.id).first()
@@ -23,7 +23,7 @@ import os
 #         new_admin.is_stuff = True
 #         db.session.commit()
 #         return 'ok'
-#     return "witaj nowy admine"
+#     return "Hello to new admin"
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -174,10 +174,6 @@ def add_product():
         return redirect(url_for('home'))
     return render_template('add_product.html', form=form)
 
-@app.route('/kotakt')
-def contact():
-    return render_template('contact.html')
-
 @app.route('/zarejestruj', methods=['GET', 'POST'])
 def register():
     form  = UserForm()
@@ -295,3 +291,42 @@ def manage_categories():
                 flash('Kategoria i produkty do niej przypisane zostały pomyślnie usunięte', category='info')
                 return redirect(url_for("products_categories"))
     return render_template('manage/manage_categories.html', categories=categories)
+
+@app.route('/zarządzaj kontakt', methods=["GET", "POST"])
+def manage_contact():
+    data_contact = Contact.query.all()
+    data_socials = SocialMedia.query.all()
+    data_addres = Adres.query.all()
+    if request.method == "POST":
+        try:
+            if request.form["addres"]:
+                new_addres = Adres(
+                    addres = request.form["addres"]
+                )
+                db.session.add(new_addres)
+        except:
+            pass
+        try:
+            if request.form["number"]:
+                new_number = Contact(
+                    phone_number = request.form["number"],
+                    number_owner = request.form["owner"]
+                )
+                db.session.add(new_number)
+        except:
+            pass
+        try:
+            if request.form["link"]:
+                new_link = SocialMedia(
+                    social_media_link = request.form["link"]
+                )
+                db.session.add(new_link)
+        except:
+            pass
+        db.session.commit()
+    return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres)
+
+@app.route('/kotakt')
+def contact():
+    return render_template('contact.html')
+

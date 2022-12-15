@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Zarządzanie stroną: Admin</title>
+{% endblock %}
+{% block content %}
+<div>
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-adres">
+    Dodaj adres
+</button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal-adres" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Dodaj adres</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST">
+                <input type="text" name="addres">
+                <br>
+                <div class="feed_spacer"></div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                <button type="submit" class="btn btn-primary">Dodaj</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-numer">
+    Dodaj numer
+</button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal-numer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Dodaj numer telefonu</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST">
+                <label>Posiadacz: </label><input type="text" name="owner">
+                <br>
+                <label>Numer: </label><input type="text" name="number">
+                <br>
+                <div class="feed_spacer"></div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                <button type="submit" class="btn btn-primary">Dodaj</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-link">
+    Dodaj link
+</button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal-link" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Dodaj link do mediów społecznościowych</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST">
+                <input type="text" name="link">
+                <br>
+                <div class="feed_spacer"></div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                <button type="submit" class="btn btn-primary">Dodaj</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    {% for addres in data_addres %}
+        <p>{{addres.addres}}</p>
+    {% endfor %}
+    {% for number in data_contact %}
+        <p>{{number.number_owner}}: {{number.phone_number}}</p>
+    {% endfor %}
+    {% for social in data_socials %}
+        <a>{{ social.social_media_links }}</a>
+    {% endfor %}
+</div>
+{% endblock %}

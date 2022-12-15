@@ -64,3 +64,16 @@ class Orders(db.Model):
 
     def __repr__(self):
         return self.phone_number()
+
+class SocialMedia(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    social_media_link = db.Column(db.String())
+
+class Contact(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    phone_number = db.Column(db.Integer())
+    number_owner = db.Column(db.String())
+    
+class Adres(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    addres = db.Column(db.String())
