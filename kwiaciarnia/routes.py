@@ -32,16 +32,16 @@ def name_changer(id):
 def add_photo(id, folder_name):
     if request.method == "POST":
         if 'file' not in request.files:
-            print("nie przesłano pliku")
+            flash(f'Nie przesłano pliku', category='warning')
         file = request.files['file']
         if file.filename == '':
-            print('nie wybrano zadnego zdjecia')
+            flash(f'Nie wybrano zadnego zdjecia', category='warning')
         if file and allowed_file(file.filename):
             filename = secure_filename(name_changer(id))
             file.save(os.path.join(app.config[f"{folder_name}"], filename))
             return redirect(url_for('home'))
         else:
-            print('wybrałeś zły format')
+            flash(f'Wybrałeś zły format', category='warning')
 
 @app.route("/")
 def home():
@@ -107,6 +107,7 @@ def dislike_result(pk):
     return redirect(url_for('home'))
 
 @app.route("/dodaj_post", methods=['GET', 'POST'])
+@login_required
 def add_post():
     form = PostForm()
     if form.validate_on_submit():
@@ -120,6 +121,7 @@ def add_post():
         db.session.add(post_to_create)
         db.session.commit()
         add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
+        flash('Post został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
     return render_template('add_post.html', form=form)
  
@@ -168,8 +170,8 @@ def add_product():
         db.session.add(new_product)
         db.session.commit()
         add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
+        flash('Proodukt został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
-    print(form.validate_on_submit())
     return render_template('add_product.html', form=form)
 
 @app.route('/kotakt')
@@ -189,6 +191,8 @@ def register():
         db.session.commit()
         login_user(new_user)
         return redirect(url_for('home'))
+    else:
+        flash('Wprowadzono niepoprawne hasł0, lub nazwa użytkownika jest już zajęta', category='info')
     return render_template('register.html', form=form)
 
 @app.route("/zaloguj", methods=["GET", "POST"])
@@ -197,16 +201,20 @@ def login():
     if form.validate_on_submit():
         user_to_login = User.query.filter_by(email=form.email.data).first()
         if user_to_login and user_to_login.check_password_correction(attempted_password=form.password.data):
-            print('imo')
+            flash(f'Zalogowano się pomyślnie', category='success')
             login_user(user_to_login)
             return redirect(url_for("home"))
         else:
-            flash('Wprowadzony emial, lub hasło jest błędne', category='danger')
+            flash('Nazwa użytkownika lub hasło zostało wprowadzne niepoprawnie', category='danger')
+    else:
+        flash('Pojawił się błąd', category='info')
     return render_template('login.html', form=form)
 
 @app.route("/wuloguj")
+@login_required
 def logout():
     logout_user()
+    flash('Wylogowano pomyślnie', category='info')
     return redirect(url_for("home"))
 
 @app.errorhandler(404)
@@ -214,10 +222,12 @@ def invalid_route(e):
     return render_template('404.html')
 
 @app.route('/zarządzaj')
+@login_required
 def manage():
     return render_template('manage/manage.html')
 
 @app.route("/zarządzaj/posty")
+@login_required
 def manage_posts():
     posts = Posts.query.order_by(Posts.id.desc())
     return render_template('manage/manage_posts.html', posts=posts)
@@ -230,6 +240,7 @@ def delete_post(id):
         db.session.delete(post)
         db.session.commit()
         try:
+            flash('Post został pomyślnie usunięty', category='info')
             os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/posts/{id}.png")
         except:
             return redirect(url_for('manage_posts'))
@@ -237,6 +248,7 @@ def delete_post(id):
     return render_template('delete/delete_post_comfirmation.html', post=post)
 
 @app.route("/zarządzaj/produkty")
+@login_required
 def manage_products():
     products = Products.query.order_by(Products.id.desc())
     return render_template('manage/manage_products.html', products=products)
@@ -255,6 +267,7 @@ def delete_product(id):
             db.session.delete(cat)
             db.session.commit()
         try:
+            flash('Produkt został pomyślnie usunięty', category='info')
             os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/products/{id}.png")
         except:
             return redirect(url_for('manage_products'))
@@ -262,6 +275,7 @@ def delete_product(id):
     return render_template('delete/delete_product_comfirmation.html', product=product)
 
 @app.route('/zarządzaj/kategorie', methods=["GET", "POST"])
+@login_required
 def manage_categories():
     categories = Product_category.query.all()
     if request.method == "POST":
@@ -270,6 +284,7 @@ def manage_categories():
                 current_category = Product_category.query.filter_by(id=request.form["old-name-id"]).first()
                 current_category.name = request.form["new-category-name"]
                 db.session.commit() 
+                flash('Nazwa kategorii została pomyślnie usunięta', category='info')
                 return redirect(url_for("products_categories"))
         except:
             if request.form["delete-category"]:
@@ -277,5 +292,6 @@ def manage_categories():
                 current_category = Product_category.query.filter_by(id=request.form["delete-category"]).first()
                 db.session.delete(current_category)
                 db.session.commit()
+                flash('Kategoria i produkty do niej przypisane zostały pomyślnie usunięte', category='info')
                 return redirect(url_for("products_categories"))
     return render_template('manage/manage_categories.html', categories=categories)
