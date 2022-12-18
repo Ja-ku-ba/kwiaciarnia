@@ -33,6 +33,7 @@ class BuyForm(FlaskForm):
 
 class SocialMediaForm(FlaskForm):
     social_media_link = StringField(label="Link: ", validators=[DataRequired()])
+    media = StringField(label='Platforma (instagram/facebook/inne): ')
     submit = SubmitField(label="Dodaj")
 
 class ContactForm(FlaskForm):

@@ -68,6 +68,7 @@ class Orders(db.Model):
 class SocialMedia(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     social_media_link = db.Column(db.String())
+    madia = db.Column(db.String())
 
 class Contact(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

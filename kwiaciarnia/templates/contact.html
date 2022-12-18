@@ -4,10 +4,29 @@
 {% endblock %}
 {% block content %}
 <div>
-    <h4>
-        Numer telefonu: 777 242 990
+    <h3>Dane kontaktowe</h3>
+    {% for adrres in addreses %}
+        <label>Lokalizacja kwiaciarni: {{adrres.addres}}</label>
         <br>
-        Adres: Nibylandia ul.Dumbeldora 9 i 3/4
-    </h4>
+    {% endfor %}
+    <hr>
+    {% for number in phone_numbers %}
+        <label>Numer do {{number.number_owner}}: {{number.phone_number}}</label>
+        <br>
+    {% endfor %}
+    <hr>
+    {% for link in links %}
+        {% if link.madia == "instagram" %}
+        <label>Instagram: </label>
+        <a href="https://github.com/Ja-ku-ba"><img src="/static/uploads/icons/ig.png"></a>
+        {% elif link.madia == "facebook" %}
+        <label>Facebook: </label>
+        <a href="https://github.com/Ja-ku-ba"><img src="/static/uploads/icons/fb.png"></a>
+        {% else %}
+        <label>Inne: </label>
+        <a href="https://github.com/Ja-ku-ba"><img src="/static/uploads/icons/weeb.png"></a>
+        {% endif %}
+        <br>
+    {% endfor %}
 </div>
 {% endblock %}

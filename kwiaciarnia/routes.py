@@ -123,8 +123,6 @@ def add_post():
         add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
         flash('Post został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
-    elif not form.validate_on_submit():
-        flash('Coś poszło nie tak', category='info')
     return render_template('add_post.html', form=form)
  
 @app.route('/oferta')
@@ -147,8 +145,6 @@ def products(cat_name, id):
         db.session.commit()
         flash('Oczekuj na połączenie od naszego pracownika', category='success')
         return redirect(url_for("home"))
-    elif not form.validate_on_submit():
-        flash('Coś poszło nie tak', category='info')
     return render_template('products.html', products=products, products_category=products_category, form=form)
 
 def check_if_category_exist(name):
@@ -178,8 +174,6 @@ def add_product():
         add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
         flash('Proodukt został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
-    elif not form.validate_on_submit():
-        flash('Coś poszło nie tak', category='info')
     return render_template('add_product.html', form=form)
 
 @app.route('/zarejestruj', methods=['GET', 'POST'])
@@ -195,8 +189,6 @@ def register():
         db.session.commit()
         login_user(new_user)
         return redirect(url_for('home'))
-    elif not form.validate_on_submit():
-        flash('Wprowadzono niepoprawne hasł0, lub nazwa użytkownika jest już zajęta', category='info')
     return render_template('register.html', form=form)
 
 @app.route("/zaloguj", methods=["GET", "POST"])
@@ -210,8 +202,6 @@ def login():
             return redirect(url_for("home"))
         else:
             flash('Nazwa użytkownika lub hasło zostało wprowadzne niepoprawnie', category='danger')
-    elif not form.validate_on_submit():
-        flash('Coś poszło nie tak', category='info')
     return render_template('login.html', form=form)
 
 @app.route("/wuloguj")
@@ -325,7 +315,8 @@ def manage_contact():
             db.session.add(new_number)
         elif socials_form.validate_on_submit():
             new_link = SocialMedia(
-                social_media_link = socials_form.social_media_link.data
+                social_media_link = socials_form.social_media_link.data,
+                madia = socials_form.media.data
             )
             flash('Link został pomyślnie dodany', category='info')
             db.session.add(new_link)
@@ -337,5 +328,8 @@ def manage_contact():
 
 @app.route('/kotakt')
 def contact():
-    return render_template('contact.html')
+    addreses = Adres.query.all()
+    phone_numbers = Contact.query.all()
+    links = SocialMedia.query.all()
+    return render_template('contact.html', addreses=addreses, phone_numbers=phone_numbers, links=links)
 
