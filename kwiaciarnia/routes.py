@@ -56,25 +56,31 @@ def like_result(pk):
     liked_post = request.form.get('like_button')
     if request.method == "POST":
         status_dislike = Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first()
+        #checks if user already dislikes this post
         if status_dislike:
-            undislike = Posts.query.filter_by(id=pk).first()
-            undislike.dislikes -= 1
             db.session.delete(status_dislike)
             db.session.commit()
+            undislike = Posts.query.filter_by(id=pk).first()
+            undislike.dislikes = Post_dislikes.query.filter_by(post_dislike=pk).count()
+            db.session.commit()
+        #adds like if user already dont likes this post yet
         if not Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first():
             new_like = Post_likes(
                 user_like = current_user.id,
                 post_like = liked_post
             )
-            liked = Posts.query.filter_by(id=pk).first()
-            liked.likes += 1
             db.session.add(new_like)
             db.session.commit()
+            liked = Posts.query.filter_by(id=pk).first()
+            liked.likes = Post_likes.query.filter_by(post_like=pk).count()
+            db.session.commit()
+        #unlike post if user already likes it
         else:
             new_unlike = Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first()
             db.session.delete(new_unlike)
+            db.session.commit()
             unlike = Posts.query.filter_by(id=pk).first()
-            unlike.likes -= 1
+            unlike.likes = Post_likes.query.filter_by(post_like=pk).count()
             db.session.commit()
     return redirect(url_for('home'))
 
@@ -84,25 +90,31 @@ def dislike_result(pk):
     disliked_post = request.form.get('dislike_button')
     if request.method == "POST":
         status_unlike = Post_likes.query.filter_by(post_like=pk, user_like=current_user.id).first()
+        #checks if user already likes this post
         if status_unlike:
-            unlike = Posts.query.filter_by(id=pk).first()
-            unlike.dislikes -= 1
             db.session.delete(status_unlike)
-            db.session.commit()        
+            db.session.commit()     
+            unlike = Posts.query.filter_by(id=pk).first()
+            unlike.dislikes = Post_likes.query.filter_by(post_like=pk).count()
+            db.session.commit()     
+        #adds like if user already dont dislikes this post yet
         if not Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first():
             new_dislike = Post_dislikes(
                 user_dislike = current_user.id,
                 post_dislike = disliked_post
             )
-            dislike = Posts.query.filter_by(id=pk).first()
-            dislike.dislikes += 1
             db.session.add(new_dislike)
             db.session.commit()
+            dislike = Posts.query.filter_by(id=pk).first()
+            dislike.dislikes = Post_dislikes.query.filter_by(post_dislike=pk).count()
+            db.session.commit()
+        #undislike post if user already dislikes it
         else:
             new_undislike = Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first()
             db.session.delete(new_undislike)
+            db.session.commit()
             undisliked = Posts.query.filter_by(id=pk).first()
-            undisliked.dislikes -= 1
+            undisliked.dislikes = Post_dislikes.query.filter_by(post_dislike=pk).count()
             db.session.commit()
     return redirect(url_for('home'))
 
