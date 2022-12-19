@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Usuń post</title>
+{% endblock %}
+{% block content %}
+{% if current_user.is_admin %}
+<div>
+    <h1>Czy na pewno chcesz edytować?</h1>
+    {% if status == "contact" %}
+        <form  method="POST">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.number_owner.label() }}
+                {{ form.number_owner() }}
+            </div>
+            <div>
+                {{ form.phone_number.label() }}
+                {{ form.phone_number() }}
+            </div>
+            {{ form.submit }}
+        </form>
+    {% elif status == "addres" %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.addres.label() }}
+                {{ form.addres() }}
+            </div>
+            {{ form.submit }}
+        </form>
+    {% else %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.media.label() }}
+                {{ form.media() }}
+            </div>
+            <div>
+                {{ form.social_media_link.label() }}
+                {{ form.social_media_link() }}
+            </div>
+            {{ form.submit }}
+        </form>
+    {% endif %}
+    <a href="{{ url_for('manage_contact') }}"><input type="button" value="Wróć"></a>
+</div>
+{% endif %}
+{% endblock %}

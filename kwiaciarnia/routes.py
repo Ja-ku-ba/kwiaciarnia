@@ -290,7 +290,7 @@ def manage_categories():
                 return redirect(url_for("products_categories"))
     return render_template('manage/manage_categories.html', categories=categories)
 
-@app.route('/zarządzaj kontakt', methods=["GET", "POST"])
+@app.route('/zarządzaj/kontakt', methods=["GET", "POST"])
 def manage_contact():
     data_contact = Contact.query.all()
     contact_form = ContactForm()
@@ -326,10 +326,86 @@ def manage_contact():
         return redirect(url_for("manage_contact"))
     return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres, contact_form=contact_form, socials_form=socials_form, addres_form=addres_form)
 
+@app.route('/zarządzaj/kontakt/usun/telefon/<int:id>', methods=["GET", "POST"])
+def delete_contact(id):
+    delete_data = Contact.query.filter_by(id=id).first()
+    status = "contact"
+    if request.method == "POST":
+        if request.form['delete']:
+            db.session.delete(delete_data)
+            db.session.commit()
+            return redirect(url_for("manage_contact"))
+        else:
+            flash('Co poszło nie tak', category='danger')
+    return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+
+@app.route('/zarządzaj/kontakt/edytuj/telefon/<int:id>', methods=["GET", "POST"])
+def edit_contact(id):
+    edit_data = Contact.query.filter_by(id=id).first()
+    status = "contact"
+    form = ContactForm()
+    if form.validate_on_submit():
+        edit_data.phone_number = form.phone_number.data
+        edit_data.number_owner  = form.number_owner.data
+        db.session.commit()
+        return redirect(url_for("manage_contact"))
+    return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+
+@app.route('/zarządzaj/kontakt/usun/adres/<int:id>', methods=["GET", "POST"])
+def delete_addres(id):
+    delete_data = Adres.query.filter_by(id=id).first()
+    status = "addres"
+    if request.method == "POST":
+        if request.form['delete']:
+            db.session.delete(delete_data)
+            db.session.commit()
+            return redirect(url_for("manage_contact"))
+        else:
+            flash('Co poszło nie tak', category='danger')
+            return redirect(url_for("manage_contact"))
+    return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+
+@app.route('/zarządzaj/kontakt/edytuj/adres/<int:id>', methods=["GET", "POST"])
+def edit_addres(id):
+    edit_data = Adres.query.filter_by(id=id).first()
+    status = "addres"
+    form = AdresForm()
+    if form.validate_on_submit():
+        edit_data.addres = form.addres.data
+        db.session.commit()
+        return redirect(url_for("manage_contact"))
+    return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+
+@app.route('/zarządzaj/kontakt/usun/social/<int:id>', methods=["GET", "POST"])
+def delete_social(id):
+    delete_data = SocialMedia.query.filter_by(id=id).first()
+    status = "social"
+    if request.method == "POST":
+        if request.form['delete']:
+            db.session.delete(delete_data)
+            db.session.commit()
+            return redirect(url_for("manage_contact"))
+        else:
+            flash('Co poszło nie tak', category='danger')
+    return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+
+@app.route('/zarządzaj/kontakt/edytuj/social/<int:id>', methods=["GET", "POST"])
+def edit_social(id):
+    edit_data = SocialMedia.query.filter_by(id=id).first()
+    status = "social"
+    form = SocialMediaForm()
+    if form.validate_on_submit():
+        print("ok")
+        edit_data.social_media_link = form.social_media_link.data
+        edit_data.media  = form.media.data
+        db.session.commit()
+        return redirect(url_for("manage_contact"))
+    return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+
 @app.route('/kotakt')
 def contact():
     addreses = Adres.query.all()
     phone_numbers = Contact.query.all()
     links = SocialMedia.query.all()
     return render_template('contact.html', addreses=addreses, phone_numbers=phone_numbers, links=links)
-
+    

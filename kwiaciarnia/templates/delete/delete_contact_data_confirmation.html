@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Usuń post</title>
+{% endblock %}
+{% block content %}
+{% if current_user.is_admin %}
+<div>
+    <h1>Czy na pewno chcesz usunąć?</h1>
+    {% if status == "contact" %}
+        <p>Numer do {{delete_data.number_owner}}: {{delete_data.phone_number}}</p>
+    {% elif status == "addres" %}
+        <p>Lokalizacja kwiaciarni: {{delete_data.addres}}</label>
+    {% else %}
+        <p>{{ delete_data.social_media_link }}</p>
+    {% endif %}
+    <form method="POST">
+        <input type="submit" name='delete' value="Potwierdź">
+    </form>
+    <a href="{{ url_for('manage_contact') }}"><input type="button" value="Wróć"></a>
+</div>
+{% endif %}
+{% endblock %}

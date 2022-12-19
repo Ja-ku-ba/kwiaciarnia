@@ -100,17 +100,17 @@
   </div>
   <hr>
     {% for addres in data_addres %}
-        <a>{{addres.addres}}</a>
+        <span>{{addres.addres}}</span> | <a href="{{ url_for('edit_addres', id=addres.id) }}">Edytuj dane</a> | <a href="{{ url_for('delete_addres', id=addres.id) }}">Usuń</a>
         <br>
     {% endfor %}
     <hr>
     {% for number in data_contact %}
-        <a>{{number.number_owner}}: {{number.phone_number}}</a>
+        <span>{{number.number_owner}}: {{number.phone_number}}</span> | <a href="{{ url_for('edit_contact', id=number.id) }}">Edytuj dane</a> | <a href="{{ url_for('delete_contact', id=number.id) }}">Usuń</a>
         <br>
     {% endfor %}
     <hr>
     {% for social in data_socials %}
-        <a>{{ social.social_media_link }}</a>
+        <span>{{ social.social_media_link }}</span> | <a href="{{ url_for('edit_social', id=social.id) }}">Edytuj dane</a> | <a href="{{ url_for('delete_social', id=social.id) }}">Usuń</a>
         <br>
     {% endfor %}
 </div>

@@ -30,7 +30,6 @@ class BuyForm(FlaskForm):
     phone_number = StringField(label="Numer telefonu: ", validators=[Length(min=9, max=12), DataRequired()])
     submit = SubmitField(label="Potwierdź zakup")
 
-
 class SocialMediaForm(FlaskForm):
     social_media_link = StringField(label="Link: ", validators=[DataRequired()])
     media = StringField(label='Platforma (instagram/facebook/inne): ')
