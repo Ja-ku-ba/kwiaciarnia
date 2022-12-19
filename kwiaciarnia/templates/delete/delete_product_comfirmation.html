@@ -16,9 +16,10 @@
             </div>
         </div>
     </div>
-    <form method="post">
+    <form method="post" class="line">
         <input type="submit" value="Usuń">        
     </form>
+    <a href="{{ url_for('manage_products') }}" class="line"><input type="button" value="Wróć"></a>
 </div>
 <div id="feed_spacer"></div>
 {% endif %}

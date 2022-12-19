@@ -13,10 +13,10 @@
     {% else %}
         <p>{{ delete_data.social_media_link }}</p>
     {% endif %}
-    <form method="POST">
+    <form method="POST" class="line">
         <input type="submit" name='delete' value="Potwierdź">
     </form>
-    <a href="{{ url_for('manage_contact') }}"><input type="button" value="Wróć"></a>
+    <a href="{{ url_for('manage_contact') }}" class="line"><input type="button" value="Wróć"></a>
 </div>
 {% endif %}
 {% endblock %}
