@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Zarządzanie stroną: Admin</title>
+{% endblock %}
+{% block content %}
+<div>
+    {% for order in orders_list_done %}
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        {{ order.oreder_name.name }}
+                    </div>
+                    <div>
+                        <span>Numer do klienta: {{ order.phone_number }}</span>
+                    </div>
+                    <div>
+                        <span>Czas złożenia zamówienia: {{ order.time }}</span>
+                    </div>
+                    <div>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                            Usuń z bazy danych
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Potwierdzenie usunięcia</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Usuniętego zamówienia nie bedzie można odzyskać</p>
+                                        <form method="POST">
+                                            <input type="hidden" name="delete" value="{{order.product}}">
+                                            <input type="submit" class="btn btn-primary" value="Usuń z dazy danych">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Wróć</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Zarządzanie stroną: Admin</title>
+{% endblock %}
+{% block content %}
+<div>
+    <a href="{{ url_for('manage_orders_done') }}">Zamówniena zrealizowane</a>
+    <hr>
+    {% for order in orders_list %}
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    {{ order.oreder_name.name }}
+                </div>
+                <div>
+                    <span>Numer do klienta: {{ order.phone_number }}</span>
+                </div>
+                <div>
+                    <span>Czas złożenia zamówienia: {{ order.time }}</span>
+                </div>
+                <div>
+                    <form method="POST">
+                        <input type="hidden" name="done" value="{{order.product}}">
+                        <span>Status realizacji: </span><input type="submit" value="Zrealizowane">
+                    </form>
+                </div>
+            </li>
+        </ul>
+    {% endfor %}
+</div>
+{% endblock %}

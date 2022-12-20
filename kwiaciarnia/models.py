@@ -63,9 +63,14 @@ class Orders(db.Model):
     phone_number = db.Column(db.String())
     buyer = db.Column(db.Integer(), db.ForeignKey('user.id'))
     status = db.Column(db.Boolean, default=False)
+    time = db.Column(db.String)
 
     def __repr__(self):
         return self.phone_number()
+
+    @property
+    def oreder_name(self):
+        return Products.query.filter_by(id=self.product).first()
 
 class SocialMedia(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

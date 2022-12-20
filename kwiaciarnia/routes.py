@@ -157,10 +157,13 @@ def products(cat_name, id):
     products_category = Product_category.query.filter_by(name=cat_name).first()
     form = BuyForm()
     if form.validate_on_submit():
+        order_time = datetime.datetime.now()
+        ord_time = f"{order_time.strftime('%d')}/{order_time.strftime('%m')}/{order_time.strftime('%y')} {order_time.strftime('%X')}"
         new_order = Orders(
             phone_number = form.phone_number.data,
             product = request.form["product_id"],
-            buyer = current_user.id
+            buyer = current_user.id,
+            time = ord_time
         )
         db.session.add(new_order)
         db.session.commit()
@@ -365,6 +368,30 @@ def manage_contact():
         db.session.commit()
         return redirect(url_for("manage_contact"))
     return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres, contact_form=contact_form, socials_form=socials_form, addres_form=addres_form)
+
+
+@app.route('/zarządzaj/zamówienia', methods=["GET", "POST"])
+def manage_orders():
+    orders_list = Orders.query.filter_by(status=False).order_by(Orders.id.desc()).all()
+    if request.method == "POST":
+        order = request.form["done"]
+        order_product = Orders.query.filter_by(product=order).first()
+        order_product.status = True
+        db.session.commit()
+        return redirect(url_for('manage_orders'))
+    return render_template('manage/manage_orders.html', orders_list=orders_list, products=products)
+
+
+@app.route('/zarządzaj/zamówienia/zrealizowane', methods=["GET", "POST"])
+def manage_orders_done():
+    orders_list_done = Orders.query.filter_by(status=True).order_by(Orders.id.desc()).all()
+    if request.method == "POST":
+        order = request.form["delete"]
+        order_product = Orders.query.filter_by(product=order).first()
+        db.session.delete(order_product)
+        db.session.commit()
+        return redirect(url_for('manage_orders_done'))
+    return render_template('manage/manage_orders_realised.html', orders_list_done=orders_list_done)
 
 
 @app.route('/zarządzaj/kontakt/usun/telefon/<int:id>', methods=["GET", "POST"])
