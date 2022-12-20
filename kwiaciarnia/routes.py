@@ -14,6 +14,7 @@ import os
 #     db.create_all()
 #     return "db updated"
 
+
 # #   BZDbQm7C2thGaocmuCWJ                                                                          #adding new admin
 # @app.route('/BZDbQm7C2thGaocmuCWJ')
 # def admin():
@@ -24,6 +25,7 @@ import os
 #         db.session.commit()
 #         return 'ok'
 #     return "Hello to new admin"
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -43,12 +45,14 @@ def add_photo(id, folder_name):
         else:
             flash(f'Wybrałeś zły format', category='warning')
 
+
 @app.route("/")
 def home():
     all_posts = Posts.query.order_by(Posts.id.desc())
     likes = Post_likes()
     dislike = Post_dislikes()
     return render_template('home.html', all_posts=all_posts, likes=likes, dislike=dislike)
+
 
 @app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
@@ -84,6 +88,7 @@ def like_result(pk):
             db.session.commit()
     return redirect(url_for('home'))
 
+
 @app.route('/dislike_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
 def dislike_result(pk):
@@ -118,6 +123,7 @@ def dislike_result(pk):
             db.session.commit()
     return redirect(url_for('home'))
 
+
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 @login_required
 def add_post():
@@ -137,11 +143,13 @@ def add_post():
         return redirect(url_for('home'))
     return render_template('add_post.html', form=form)
  
+
 @app.route('/oferta')
 def products_categories():
     products_to_sale_category = Product_category.query.group_by(Product_category.name).all()
     products_to_sale_id = Products.query.group_by(Products.category).all()
     return render_template('products_categories.html', products_to_sale_category=products_to_sale_category, products_to_sale_id=products_to_sale_id)
+
 
 @app.route('/oferta/<cat_name>/<id>', methods=["GET", "POST"])
 def products(cat_name, id):
@@ -151,13 +159,15 @@ def products(cat_name, id):
     if form.validate_on_submit():
         new_order = Orders(
             phone_number = form.phone_number.data,
-            product = request.form["product_id"]
+            product = request.form["product_id"],
+            buyer = current_user.id
         )
         db.session.add(new_order)
         db.session.commit()
         flash('Oczekuj na połączenie od naszego pracownika', category='success')
         return redirect(url_for("home"))
     return render_template('products.html', products=products, products_category=products_category, form=form)
+
 
 def check_if_category_exist(name):
     if Product_category.query.filter_by(name=name).first() is not None:
@@ -170,6 +180,7 @@ def check_if_category_exist(name):
         db.session.add(category_id)
         db.session.commit()
         return category_id.id
+
 
 @app.route('/dodaj produkt', methods=["GET", "POST"])
 def add_product():
@@ -188,6 +199,7 @@ def add_product():
         return redirect(url_for('home'))
     return render_template('add_product.html', form=form)
 
+
 @app.route('/zarejestruj', methods=['GET', 'POST'])
 def register():
     form  = UserForm()
@@ -203,6 +215,7 @@ def register():
         return redirect(url_for('home'))
     return render_template('register.html', form=form)
 
+
 @app.route("/zaloguj", methods=["GET", "POST"])
 def login():
     form = Loginform()
@@ -216,6 +229,7 @@ def login():
             flash('Nazwa użytkownika lub hasło zostało wprowadzne niepoprawnie', category='danger')
     return render_template('login.html', form=form)
 
+
 @app.route("/wuloguj")
 @login_required
 def logout():
@@ -223,20 +237,32 @@ def logout():
     flash('Wylogowano pomyślnie', category='info')
     return redirect(url_for("home"))
 
+
+@app.route('/uzytkownik/<name>')
+def user_page(name):
+    user_id = User.query.filter_by(username = name).first()
+    user_purchases = Orders.query.filter_by(buyer=user_id.id).order_by(Orders.id.desc()).all()
+    products = Products.query.all()
+    return render_template('user_page.html', user_purchases=user_purchases, user_id=user_id, products=products)
+
+
 @app.errorhandler(404)
 def invalid_route(e):
     return render_template('404.html')
+
 
 @app.route('/zarządzaj')
 @login_required
 def manage():
     return render_template('manage/manage.html')
 
+
 @app.route("/zarządzaj/posty")
 @login_required
 def manage_posts():
     posts = Posts.query.order_by(Posts.id.desc())
     return render_template('manage/manage_posts.html', posts=posts)
+
 
 @app.route('/usun_post/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -253,18 +279,19 @@ def delete_post(id):
         return redirect(url_for('manage_posts'))
     return render_template('delete/delete_post_comfirmation.html', post=post)
 
+
 @app.route("/zarządzaj/produkty")
 @login_required
 def manage_products():
     products = Products.query.order_by(Products.id.desc())
     return render_template('manage/manage_products.html', products=products)
 
+
 @app.route('/usun_produkt/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_product(id):
     product = Products.query.filter_by(id=id).first()
     cat = Product_category.query.filter_by(id=product.category).first()
-
     if request.method == "POST":
         db.session.delete(product)
         db.session.commit()
@@ -279,6 +306,7 @@ def delete_product(id):
             return redirect(url_for('manage_products'))
         return redirect(url_for('manage_products'))
     return render_template('delete/delete_product_comfirmation.html', product=product)
+
 
 @app.route('/zarządzaj/kategorie', methods=["GET", "POST"])
 @login_required
@@ -302,6 +330,7 @@ def manage_categories():
                 return redirect(url_for("products_categories"))
     return render_template('manage/manage_categories.html', categories=categories)
 
+
 @app.route('/zarządzaj/kontakt', methods=["GET", "POST"])
 def manage_contact():
     data_contact = Contact.query.all()
@@ -310,7 +339,6 @@ def manage_contact():
     socials_form = SocialMediaForm()
     data_addres = Adres.query.all()
     addres_form = AdresForm()
-
     if request.method == "POST":
         if addres_form.validate_on_submit():
             new_addres = Adres(
@@ -338,6 +366,7 @@ def manage_contact():
         return redirect(url_for("manage_contact"))
     return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres, contact_form=contact_form, socials_form=socials_form, addres_form=addres_form)
 
+
 @app.route('/zarządzaj/kontakt/usun/telefon/<int:id>', methods=["GET", "POST"])
 def delete_contact(id):
     delete_data = Contact.query.filter_by(id=id).first()
@@ -351,6 +380,7 @@ def delete_contact(id):
             flash('Co poszło nie tak', category='danger')
     return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
 
+
 @app.route('/zarządzaj/kontakt/edytuj/telefon/<int:id>', methods=["GET", "POST"])
 def edit_contact(id):
     edit_data = Contact.query.filter_by(id=id).first()
@@ -362,6 +392,7 @@ def edit_contact(id):
         db.session.commit()
         return redirect(url_for("manage_contact"))
     return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+
 
 @app.route('/zarządzaj/kontakt/usun/adres/<int:id>', methods=["GET", "POST"])
 def delete_addres(id):
@@ -377,6 +408,7 @@ def delete_addres(id):
             return redirect(url_for("manage_contact"))
     return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
 
+
 @app.route('/zarządzaj/kontakt/edytuj/adres/<int:id>', methods=["GET", "POST"])
 def edit_addres(id):
     edit_data = Adres.query.filter_by(id=id).first()
@@ -387,6 +419,7 @@ def edit_addres(id):
         db.session.commit()
         return redirect(url_for("manage_contact"))
     return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+
 
 @app.route('/zarządzaj/kontakt/usun/social/<int:id>', methods=["GET", "POST"])
 def delete_social(id):
@@ -401,6 +434,7 @@ def delete_social(id):
             flash('Co poszło nie tak', category='danger')
     return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
 
+
 @app.route('/zarządzaj/kontakt/edytuj/social/<int:id>', methods=["GET", "POST"])
 def edit_social(id):
     edit_data = SocialMedia.query.filter_by(id=id).first()
@@ -413,6 +447,7 @@ def edit_social(id):
         db.session.commit()
         return redirect(url_for("manage_contact"))
     return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+
 
 @app.route('/kotakt')
 def contact():

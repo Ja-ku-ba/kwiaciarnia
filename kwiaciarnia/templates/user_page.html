@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Wyimaginowana kwiaciarnia: Zaloguj</title>
+{% endblock %}
+{% block content %}
+<div>
+    <div class="scrollmenu scrolly">
+        {% for product in user_purchases %}
+            {% for prd in products %}
+                {% if product.product == prd.id %}
+                    <div class="card"  style="width: 18rem;">
+                        <img class="card-img-top img-size" src="/static/uploads/products/{{product.product}}.png" alt="{{product.name}}" onerror="this.onerror=null;this.src='/static/uploads/logo/filler.png';">
+                        <span class="btn btn-muted">{{prd.name}}</span>
+                        {% if product.status == "False" %}
+                            <span class="btn">Status oczekiwania: Zrealizowano</span>
+                        {% else %}
+                            <span class="btn">Status oczekiwania: W realizacji</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

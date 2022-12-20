@@ -61,6 +61,8 @@ class Orders(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     product = db.Column(db.Integer(), db.ForeignKey('products.id'))
     phone_number = db.Column(db.String())
+    buyer = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    status = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return self.phone_number()
