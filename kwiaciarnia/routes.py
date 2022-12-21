@@ -168,7 +168,7 @@ def products(cat_name, id):
         db.session.add(new_order)
         db.session.commit()
         flash('Oczekuj na połączenie od naszego pracownika', category='success')
-        return redirect(url_for("home"))
+        return redirect(url_for("products", cat_name=cat_name, id=id))
     return render_template('products.html', products=products, products_category=products_category, form=form)
 
 
@@ -199,7 +199,8 @@ def add_product():
         db.session.commit()
         add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
         flash('Proodukt został pomyślnie dodany', category='success')
-        return redirect(url_for('home'))
+        products_category = Product_category.query.filter_by(id=new_product.category).first()
+        return redirect(url_for("products", cat_name=products_category.name, id=products_category.id))
     return render_template('manage/manage_add_product.html', form=form)
 
 
@@ -483,3 +484,16 @@ def contact():
     links = SocialMedia.query.all()
     return render_template('contact.html', addreses=addreses, phone_numbers=phone_numbers, links=links)
     
+
+
+
+
+
+
+
+
+
+
+
+
+
