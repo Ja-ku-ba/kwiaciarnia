@@ -141,7 +141,7 @@ def add_post():
         add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
         flash('Post został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
-    return render_template('add_post.html', form=form)
+    return render_template('manage/manage_add_post.html', form=form)
  
 
 @app.route('/oferta')
@@ -200,7 +200,7 @@ def add_product():
         add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
         flash('Proodukt został pomyślnie dodany', category='success')
         return redirect(url_for('home'))
-    return render_template('add_product.html', form=form)
+    return render_template('manage/manage_add_product.html', form=form)
 
 
 @app.route('/zarejestruj', methods=['GET', 'POST'])
@@ -418,7 +418,7 @@ def edit_contact(id):
         edit_data.number_owner  = form.number_owner.data
         db.session.commit()
         return redirect(url_for("manage_contact"))
-    return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+    return render_template("manage/manage_edit_contact_data.html", status=status, edit_data=edit_data, form=form)
 
 
 @app.route('/zarządzaj/kontakt/usun/adres/<int:id>', methods=["GET", "POST"])
