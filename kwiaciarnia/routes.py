@@ -127,21 +127,26 @@ def dislike_result(pk):
 @app.route("/dodaj_post", methods=['GET', 'POST'])
 @login_required
 def add_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        post_to_create = Posts(
-            title = form.title.data,
-            body = form.body.data,
-            likes = 0,
-            dislikes = 0,
-            added = datetime.datetime.now()
-        )
-        db.session.add(post_to_create)
-        db.session.commit()
-        add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
-        flash('Post został pomyślnie dodany', category='success')
-        return redirect(url_for('home'))
-    return render_template('manage/manage_add_post.html', form=form)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        form = PostForm()
+        if form.validate_on_submit():
+            post_to_create = Posts(
+                title = form.title.data,
+                body = form.body.data,
+                likes = 0,
+                dislikes = 0,
+                added = datetime.datetime.now()
+            )
+            db.session.add(post_to_create)
+            db.session.commit()
+            add_photo(post_to_create.id, 'UPLOAD_FOLDER_POSTS')
+            flash('Post został pomyślnie dodany', category='success')
+            return redirect(url_for('home'))
+        return render_template('manage/manage_add_post.html', form=form)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
  
 
 @app.route('/oferta')
@@ -187,21 +192,26 @@ def check_if_category_exist(name):
 
 @app.route('/dodaj produkt', methods=["GET", "POST"])
 def add_product():
-    form = AddProductForm()
-    if form.validate_on_submit():
-        new_product = Products(
-            category = check_if_category_exist(form.category.data),
-            name = form.name.data,
-            description = form.description.data,
-            price = form.price.data,
-        )
-        db.session.add(new_product)
-        db.session.commit()
-        add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
-        flash('Proodukt został pomyślnie dodany', category='success')
-        products_category = Product_category.query.filter_by(id=new_product.category).first()
-        return redirect(url_for("products", cat_name=products_category.name, id=products_category.id))
-    return render_template('manage/manage_add_product.html', form=form)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        form = AddProductForm()
+        if form.validate_on_submit():
+            new_product = Products(
+                category = check_if_category_exist(form.category.data),
+                name = form.name.data,
+                description = form.description.data,
+                price = form.price.data,
+            )
+            db.session.add(new_product)
+            db.session.commit()
+            add_photo(new_product.id, 'UPLOAD_FOLDER_PRODUCTS')
+            flash('Proodukt został pomyślnie dodany', category='success')
+            products_category = Product_category.query.filter_by(id=new_product.category).first()
+            return redirect(url_for("products", cat_name=products_category.name, id=products_category.id))
+        return render_template('manage/manage_add_product.html', form=form)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarejestruj', methods=['GET', 'POST'])
@@ -244,6 +254,7 @@ def logout():
 
 @app.route('/uzytkownik/<name>')
 def user_page(name):
+    name = current_user.username
     user_id = User.query.filter_by(username = name).first()
     user_purchases = Orders.query.filter_by(buyer=user_id.id).order_by(Orders.id.desc()).all()
     products = Products.query.all()
@@ -258,223 +269,306 @@ def invalid_route(e):
 @app.route('/zarządzaj')
 @login_required
 def manage():
-    return render_template('manage/manage.html')
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        return render_template('manage/manage.html')
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route("/zarządzaj/posty")
 @login_required
 def manage_posts():
-    posts = Posts.query.order_by(Posts.id.desc())
-    return render_template('manage/manage_posts.html', posts=posts)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        posts = Posts.query.order_by(Posts.id.desc())
+        return render_template('manage/manage_posts.html', posts=posts)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/usun_post/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_post(id):
-    post = Posts.query.filter_by(id=id).first()
-    if request.method == "POST":
-        db.session.delete(post)
-        db.session.commit()
-        try:
-            flash('Post został pomyślnie usunięty', category='info')
-            os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/posts/{id}.png")
-        except:
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        post = Posts.query.filter_by(id=id).first()
+        if request.method == "POST":
+            db.session.delete(post)
+            db.session.commit()
+            try:
+                flash('Post został pomyślnie usunięty', category='info')
+                os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/posts/{id}.png")
+            except:
+                return redirect(url_for('manage_posts'))
             return redirect(url_for('manage_posts'))
-        return redirect(url_for('manage_posts'))
-    return render_template('delete/delete_post_comfirmation.html', post=post)
+        return render_template('delete/delete_post_comfirmation.html', post=post)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route("/zarządzaj/produkty")
 @login_required
 def manage_products():
-    products = Products.query.order_by(Products.id.desc())
-    return render_template('manage/manage_products.html', products=products)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        products = Products.query.order_by(Products.id.desc())
+        return render_template('manage/manage_products.html', products=products)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/usun_produkt/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_product(id):
-    product = Products.query.filter_by(id=id).first()
-    cat = Product_category.query.filter_by(id=product.category).first()
-    if request.method == "POST":
-        db.session.delete(product)
-        db.session.commit()
-        delete_category = Products.query.filter_by(category=cat.id).first()
-        if delete_category is None:
-            db.session.delete(cat)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        product = Products.query.filter_by(id=id).first()
+        cat = Product_category.query.filter_by(id=product.category).first()
+        if request.method == "POST":
+            db.session.delete(product)
             db.session.commit()
-        try:
-            flash('Produkt został pomyślnie usunięty', category='info')
-            os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/products/{id}.png")
-        except:
+            delete_category = Products.query.filter_by(category=cat.id).first()
+            if delete_category is None:
+                db.session.delete(cat)
+                db.session.commit()
+            try:
+                flash('Produkt został pomyślnie usunięty', category='info')
+                os.remove(f"C:/Users/jakub/Desktop/kwiaciarnia/kwiaciarnia/static/uploads/products/{id}.png")
+            except:
+                return redirect(url_for('manage_products'))
             return redirect(url_for('manage_products'))
-        return redirect(url_for('manage_products'))
-    return render_template('delete/delete_product_comfirmation.html', product=product)
+        return render_template('delete/delete_product_comfirmation.html', product=product)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/kategorie', methods=["GET", "POST"])
 @login_required
 def manage_categories():
-    categories = Product_category.query.all()
-    if request.method == "POST":
-        try:
-            if request.form["new-category-name"]:
-                current_category = Product_category.query.filter_by(id=request.form["old-name-id"]).first()
-                current_category.name = request.form["new-category-name"]
-                db.session.commit() 
-                flash('Nazwa kategorii została pomyślnie usunięta', category='info')
-                return redirect(url_for("products_categories"))
-        except:
-            if request.form["delete-category"]:
-                Products.query.filter_by(category=request.form["delete-category"]).delete()
-                current_category = Product_category.query.filter_by(id=request.form["delete-category"]).first()
-                db.session.delete(current_category)
-                db.session.commit()
-                flash('Kategoria i produkty do niej przypisane zostały pomyślnie usunięte', category='info')
-                return redirect(url_for("products_categories"))
-    return render_template('manage/manage_categories.html', categories=categories)
-
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        categories = Product_category.query.all()
+        if request.method == "POST":
+            try:
+                if request.form["new-category-name"]:
+                    current_category = Product_category.query.filter_by(id=request.form["old-name-id"]).first()
+                    current_category.name = request.form["new-category-name"]
+                    db.session.commit() 
+                    flash('Nazwa kategorii została pomyślnie usunięta', category='info')
+                    return redirect(url_for("products_categories"))
+            except:
+                if request.form["delete-category"]:
+                    Products.query.filter_by(category=request.form["delete-category"]).delete()
+                    current_category = Product_category.query.filter_by(id=request.form["delete-category"]).first()
+                    db.session.delete(current_category)
+                    db.session.commit()
+                    flash('Kategoria i produkty do niej przypisane zostały pomyślnie usunięte', category='info')
+                    return redirect(url_for("products_categories"))
+        return render_template('manage/manage_categories.html', categories=categories)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 @app.route('/zarządzaj/kontakt', methods=["GET", "POST"])
+@login_required
 def manage_contact():
-    data_contact = Contact.query.all()
-    contact_form = ContactForm()
-    data_socials = SocialMedia.query.all()
-    socials_form = SocialMediaForm()
-    data_addres = Adres.query.all()
-    addres_form = AdresForm()
-    if request.method == "POST":
-        if addres_form.validate_on_submit():
-            new_addres = Adres(
-                addres = addres_form.addres.data
-            )
-            flash('Adres został pomyślnie dodany', category='info')
-            db.session.add(new_addres)
-        elif contact_form.validate_on_submit():
-            new_number = Contact(
-                phone_number = contact_form.phone_number.data,
-                number_owner = contact_form.number_owner.data
-            )
-            flash('Numer został pomyślnie dodany', category='info')
-            db.session.add(new_number)
-        elif socials_form.validate_on_submit():
-            new_link = SocialMedia(
-                social_media_link = socials_form.social_media_link.data,
-                madia = socials_form.media.data
-            )
-            flash('Link został pomyślnie dodany', category='info')
-            db.session.add(new_link)
-        else:
-            flash('Co poszło nie tak', category='danger')
-        db.session.commit()
-        return redirect(url_for("manage_contact"))
-    return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres, contact_form=contact_form, socials_form=socials_form, addres_form=addres_form)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        data_contact = Contact.query.all()
+        contact_form = ContactForm()
+        data_socials = SocialMedia.query.all()
+        socials_form = SocialMediaForm()
+        data_addres = Adres.query.all()
+        addres_form = AdresForm()
+        if request.method == "POST":
+            if addres_form.validate_on_submit():
+                new_addres = Adres(
+                    addres = addres_form.addres.data
+                )
+                flash('Adres został pomyślnie dodany', category='info')
+                db.session.add(new_addres)
+            elif contact_form.validate_on_submit():
+                new_number = Contact(
+                    phone_number = contact_form.phone_number.data,
+                    number_owner = contact_form.number_owner.data
+                )
+                flash('Numer został pomyślnie dodany', category='info')
+                db.session.add(new_number)
+            elif socials_form.validate_on_submit():
+                new_link = SocialMedia(
+                    social_media_link = socials_form.social_media_link.data,
+                    madia = socials_form.media.data
+                )
+                flash('Link został pomyślnie dodany', category='info')
+                db.session.add(new_link)
+            else:
+                flash('Co poszło nie tak', category='danger')
+            db.session.commit()
+            return redirect(url_for("manage_contact"))
+        return render_template('manage/manage_contact.html', data_contact=data_contact, data_socials=data_socials, data_addres=data_addres, contact_form=contact_form, socials_form=socials_form, addres_form=addres_form)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/zamówienia', methods=["GET", "POST"])
+@login_required
 def manage_orders():
-    orders_list = Orders.query.filter_by(status=False).order_by(Orders.id.desc()).all()
-    if request.method == "POST":
-        order = request.form["done"]
-        order_product = Orders.query.filter_by(product=order).first()
-        order_product.status = True
-        db.session.commit()
-        return redirect(url_for('manage_orders'))
-    return render_template('manage/manage_orders.html', orders_list=orders_list, products=products)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        orders_list = Orders.query.filter_by(status=False).order_by(Orders.id.desc()).all()
+        if request.method == "POST":
+            order = request.form["done"]
+            order_product = Orders.query.filter_by(product=order).first()
+            order_product.status = True
+            db.session.commit()
+            return redirect(url_for('manage_orders'))
+        return render_template('manage/manage_orders.html', orders_list=orders_list, products=products)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/zamówienia/zrealizowane', methods=["GET", "POST"])
+@login_required
 def manage_orders_done():
-    orders_list_done = Orders.query.filter_by(status=True).order_by(Orders.id.desc()).all()
-    if request.method == "POST":
-        order = request.form["delete"]
-        order_product = Orders.query.filter_by(product=order).first()
-        db.session.delete(order_product)
-        db.session.commit()
-        return redirect(url_for('manage_orders_done'))
-    return render_template('manage/manage_orders_realised.html', orders_list_done=orders_list_done)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        orders_list_done = Orders.query.filter_by(status=True).order_by(Orders.id.desc()).all()
+        if request.method == "POST":
+            order = request.form["delete"]
+            order_product = Orders.query.filter_by(product=order).first()
+            db.session.delete(order_product)
+            db.session.commit()
+            return redirect(url_for('manage_orders_done'))
+        return render_template('manage/manage_orders_realised.html', orders_list_done=orders_list_done)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/kontakt/usun/telefon/<int:id>', methods=["GET", "POST"])
+@login_required
 def delete_contact(id):
-    delete_data = Contact.query.filter_by(id=id).first()
-    status = "contact"
-    if request.method == "POST":
-        if request.form['delete']:
-            db.session.delete(delete_data)
-            db.session.commit()
-            return redirect(url_for("manage_contact"))
-        else:
-            flash('Co poszło nie tak', category='danger')
-    return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        delete_data = Contact.query.filter_by(id=id).first()
+        status = "contact"
+        if request.method == "POST":
+            if request.form['delete']:
+                db.session.delete(delete_data)
+                db.session.commit()
+                return redirect(url_for("manage_contact"))
+            else:
+                flash('Co poszło nie tak', category='danger')
+        return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/kontakt/edytuj/telefon/<int:id>', methods=["GET", "POST"])
+@login_required
 def edit_contact(id):
-    edit_data = Contact.query.filter_by(id=id).first()
-    status = "contact"
-    form = ContactForm()
-    if form.validate_on_submit():
-        edit_data.phone_number = form.phone_number.data
-        edit_data.number_owner  = form.number_owner.data
-        db.session.commit()
-        return redirect(url_for("manage_contact"))
-    return render_template("manage/manage_edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        edit_data = Contact.query.filter_by(id=id).first()
+        status = "contact"
+        form = ContactForm()
+        if form.validate_on_submit():
+            edit_data.phone_number = form.phone_number.data
+            edit_data.number_owner  = form.number_owner.data
+            db.session.commit()
+            return redirect(url_for("manage_contact"))
+        return render_template("manage/manage_edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/kontakt/usun/adres/<int:id>', methods=["GET", "POST"])
+@login_required
 def delete_addres(id):
-    delete_data = Adres.query.filter_by(id=id).first()
-    status = "addres"
-    if request.method == "POST":
-        if request.form['delete']:
-            db.session.delete(delete_data)
-            db.session.commit()
-            return redirect(url_for("manage_contact"))
-        else:
-            flash('Co poszło nie tak', category='danger')
-            return redirect(url_for("manage_contact"))
-    return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        delete_data = Adres.query.filter_by(id=id).first()
+        status = "addres"
+        if request.method == "POST":
+            if request.form['delete']:
+                db.session.delete(delete_data)
+                db.session.commit()
+                return redirect(url_for("manage_contact"))
+            else:
+                flash('Co poszło nie tak', category='danger')
+                return redirect(url_for("manage_contact"))
+        return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/kontakt/edytuj/adres/<int:id>', methods=["GET", "POST"])
+@login_required
 def edit_addres(id):
-    edit_data = Adres.query.filter_by(id=id).first()
-    status = "addres"
-    form = AdresForm()
-    if form.validate_on_submit():
-        edit_data.addres = form.addres.data
-        db.session.commit()
-        return redirect(url_for("manage_contact"))
-    return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        edit_data = Adres.query.filter_by(id=id).first()
+        status = "addres"
+        form = AdresForm()
+        if form.validate_on_submit():
+            edit_data.addres = form.addres.data
+            db.session.commit()
+            return redirect(url_for("manage_contact"))
+        return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/kontakt/usun/social/<int:id>', methods=["GET", "POST"])
+@login_required
 def delete_social(id):
-    delete_data = SocialMedia.query.filter_by(id=id).first()
-    status = "social"
-    if request.method == "POST":
-        if request.form['delete']:
-            db.session.delete(delete_data)
-            db.session.commit()
-            return redirect(url_for("manage_contact"))
-        else:
-            flash('Co poszło nie tak', category='danger')
-    return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        delete_data = SocialMedia.query.filter_by(id=id).first()
+        status = "social"
+        if request.method == "POST":
+            if request.form['delete']:
+                db.session.delete(delete_data)
+                db.session.commit()
+                return redirect(url_for("manage_contact"))
+            else:
+                flash('Co poszło nie tak', category='danger')
+        return render_template("delete/delete_contact_data_confirmation.html", delete_data=delete_data, status=status)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/zarządzaj/kontakt/edytuj/social/<int:id>', methods=["GET", "POST"])
+@login_required
 def edit_social(id):
-    edit_data = SocialMedia.query.filter_by(id=id).first()
-    status = "social"
-    form = SocialMediaForm()
-    if form.validate_on_submit():
-        print("ok")
-        edit_data.social_media_link = form.social_media_link.data
-        edit_data.media  = form.media.data
-        db.session.commit()
-        return redirect(url_for("manage_contact"))
-    return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+    check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
+    if check_user_admin_status is True:
+        edit_data = SocialMedia.query.filter_by(id=id).first()
+        status = "social"
+        form = SocialMediaForm()
+        if form.validate_on_submit():
+            print("ok")
+            edit_data.social_media_link = form.social_media_link.data
+            edit_data.media  = form.media.data
+            db.session.commit()
+            return redirect(url_for("manage_contact"))
+        return render_template("edit_contact_data.html", status=status, edit_data=edit_data, form=form)
+    else:
+        flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
+        return redirect(url_for("home"))
 
 
 @app.route('/kotakt')
@@ -484,16 +578,4 @@ def contact():
     links = SocialMedia.query.all()
     return render_template('contact.html', addreses=addreses, phone_numbers=phone_numbers, links=links)
     
-
-
-
-
-
-
-
-
-
-
-
-
 
