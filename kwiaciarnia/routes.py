@@ -53,6 +53,9 @@ def home():
     dislike = Post_dislikes()
     return render_template('home.html', all_posts=all_posts, likes=likes, dislike=dislike)
 
+@app.route('/home')
+def index():
+    return render_template('C:/Users/jakub/Desktop/host/index.html')
 
 @app.route('/like_result/<int:pk>', methods=['GET', 'POST'])
 @login_required
@@ -270,7 +273,7 @@ def invalid_route(e):
 @login_required
 def manage():
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         return render_template('manage/manage.html')
     else:
         flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
@@ -281,7 +284,7 @@ def manage():
 @login_required
 def manage_posts():
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         posts = Posts.query.order_by(Posts.id.desc())
         return render_template('manage/manage_posts.html', posts=posts)
     else:
@@ -293,7 +296,7 @@ def manage_posts():
 @login_required
 def delete_post(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         post = Posts.query.filter_by(id=id).first()
         if request.method == "POST":
             db.session.delete(post)
@@ -314,7 +317,7 @@ def delete_post(id):
 @login_required
 def manage_products():
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         products = Products.query.order_by(Products.id.desc())
         return render_template('manage/manage_products.html', products=products)
     else:
@@ -326,7 +329,7 @@ def manage_products():
 @login_required
 def delete_product(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         product = Products.query.filter_by(id=id).first()
         cat = Product_category.query.filter_by(id=product.category).first()
         if request.method == "POST":
@@ -352,7 +355,7 @@ def delete_product(id):
 @login_required
 def manage_categories():
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         categories = Product_category.query.all()
         if request.method == "POST":
             try:
@@ -379,7 +382,7 @@ def manage_categories():
 @login_required
 def manage_contact():
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         data_contact = Contact.query.all()
         contact_form = ContactForm()
         data_socials = SocialMedia.query.all()
@@ -421,7 +424,7 @@ def manage_contact():
 @login_required
 def manage_orders():
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         orders_list = Orders.query.filter_by(status=False).order_by(Orders.id.desc()).all()
         if request.method == "POST":
             order = request.form["done"]
@@ -439,7 +442,7 @@ def manage_orders():
 @login_required
 def manage_orders_done():
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         orders_list_done = Orders.query.filter_by(status=True).order_by(Orders.id.desc()).all()
         if request.method == "POST":
             order = request.form["delete"]
@@ -457,7 +460,7 @@ def manage_orders_done():
 @login_required
 def delete_contact(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         delete_data = Contact.query.filter_by(id=id).first()
         status = "contact"
         if request.method == "POST":
@@ -477,7 +480,7 @@ def delete_contact(id):
 @login_required
 def edit_contact(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         edit_data = Contact.query.filter_by(id=id).first()
         status = "contact"
         form = ContactForm()
@@ -496,7 +499,7 @@ def edit_contact(id):
 @login_required
 def delete_addres(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         delete_data = Adres.query.filter_by(id=id).first()
         status = "addres"
         if request.method == "POST":
@@ -517,7 +520,7 @@ def delete_addres(id):
 @login_required
 def edit_addres(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         edit_data = Adres.query.filter_by(id=id).first()
         status = "addres"
         form = AdresForm()
@@ -535,7 +538,7 @@ def edit_addres(id):
 @login_required
 def delete_social(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         delete_data = SocialMedia.query.filter_by(id=id).first()
         status = "social"
         if request.method == "POST":
@@ -555,7 +558,7 @@ def delete_social(id):
 @login_required
 def edit_social(id):
     check_user_admin_status =  User.query.filter_by(id=current_user.id).first()
-    if check_user_admin_status is True:
+    if check_user_admin_status.is_admin is True:
         edit_data = SocialMedia.query.filter_by(id=id).first()
         status = "social"
         form = SocialMediaForm()
