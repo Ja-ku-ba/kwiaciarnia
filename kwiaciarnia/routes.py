@@ -6,7 +6,8 @@ from flask_login import login_user, logout_user, login_required, current_user
 import datetime
 import urllib.request                                                                               #without that u r unable to create/edit db
 from werkzeug.utils import secure_filename
-import os 
+import os
+import flask
 
 # #   oK5XKfRTkmBZShUafzZF                                                                            #updating db
 # @app.route('/oK5XKfRTkmBZShUafzZF')
@@ -101,10 +102,10 @@ def dislike_result(pk):
         #checks if user already likes this post
         if status_unlike:
             db.session.delete(status_unlike)
-            db.session.commit()     
+            db.session.commit()
             unlike = Posts.query.filter_by(id=pk).first()
             unlike.dislikes = Post_likes.query.filter_by(post_like=pk).count()
-            db.session.commit()     
+            db.session.commit()
         #adds like if user already dont dislikes this post yet
         if not Post_dislikes.query.filter_by(post_dislike=pk, user_dislike=current_user.id).first():
             new_dislike = Post_dislikes(
@@ -150,7 +151,7 @@ def add_post():
     else:
         flash('Nie masz uprawnień do wyświetlania tej zawartości', category='danger')
         return redirect(url_for("home"))
- 
+
 
 @app.route('/oferta')
 def products_categories():
@@ -164,19 +165,24 @@ def products(cat_name, id):
     products = Products.query.filter_by(category=id).all()
     products_category = Product_category.query.filter_by(name=cat_name).first()
     form = BuyForm()
-    if form.validate_on_submit():
-        order_time = datetime.datetime.now()
-        ord_time = f"{order_time.strftime('%d')}/{order_time.strftime('%m')}/{order_time.strftime('%y')} {order_time.strftime('%X')}"
-        new_order = Orders(
-            phone_number = form.phone_number.data,
-            product = request.form["product_id"],
-            buyer = current_user.id,
-            time = ord_time
-        )
-        db.session.add(new_order)
-        db.session.commit()
-        flash('Oczekuj na połączenie od naszego pracownika', category='success')
-        return redirect(url_for("products", cat_name=cat_name, id=id))
+    if flask.request.method == 'POST':
+        if len(form.phone_number.data) == 9:
+            if form.validate_on_submit():
+                order_time = datetime.datetime.now()
+                ord_time = f"{order_time.strftime('%d')}/{order_time.strftime('%m')}/{order_time.strftime('%y')} {order_time.strftime('%X')}"
+                new_order = Orders(
+                    phone_number = form.phone_number.data,
+                    product = request.form["product_id"],
+                    buyer = current_user.id,
+                    time = ord_time
+                )
+                db.session.add(new_order)
+                db.session.commit()
+                flash('Oczekuj na połączenie od naszego pracownika', category='success')
+                return redirect(url_for("products", cat_name=cat_name, id=id))
+        else:
+            flash('Numer telefounu musi mieć format XXXYYYZZZ, (9 cyfr)', category='success')
+            return redirect(url_for("products", cat_name=cat_name, id=id))
     return render_template('products.html', products=products, products_category=products_category, form=form)
 
 
@@ -222,7 +228,7 @@ def register():
     form  = UserForm()
     if form.validate_on_submit():
         new_user = User(
-            username = form.username.data, 
+            username = form.username.data,
             password = form.password1.data,
             email = form.email.data
         )
@@ -363,7 +369,7 @@ def manage_categories():
                 if request.form["new-category-name"]:
                     current_category = Product_category.query.filter_by(id=request.form["old-name-id"]).first()
                     current_category.name = request.form["new-category-name"]
-                    db.session.commit() 
+                    db.session.commit()
                     flash('Nazwa kategorii została pomyślnie usunięta', category='info')
                     return redirect(url_for("products_categories"))
             except:
@@ -581,5 +587,5 @@ def contact():
     phone_numbers = Contact.query.all()
     links = SocialMedia.query.all()
     return render_template('contact.html', addreses=addreses, phone_numbers=phone_numbers, links=links)
-    
+
 

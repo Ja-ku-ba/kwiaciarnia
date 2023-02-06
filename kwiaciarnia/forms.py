@@ -27,7 +27,7 @@ class AddProductForm(FlaskForm):
     submit = SubmitField(label="Dodaj")
 
 class BuyForm(FlaskForm):
-    phone_number = StringField(label="Numer telefonu: ", validators=[Length(min=9, max=12), DataRequired()])
+    phone_number = StringField(label="Numer telefonu: ", validators=[DataRequired()])
     submit = SubmitField(label="Potwierdź zakup")
 
 class SocialMediaForm(FlaskForm):
