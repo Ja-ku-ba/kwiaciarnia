@@ -5,30 +5,35 @@
 </title>
 {% endblock title %}
 {% block content %}
-<div>
-    <form method="post">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.username.label() }}
-            {{ form.username() }}
-        </div>
-        <div>
-            {{ form.email.label() }}
-            {{ form.email() }}
-        </div>
-        <div>
-            {{ form.password1.label() }}
-            {{ form.password1() }}
-        </div>
-        <div>
-            {{ form.password2.label() }}
-            {{ form.password2() }}
-        </div>
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
-    <p>Masz już konto?</p>
-    <a href="{{ url_for('login') }}">Zaloguj</a>
+<div class="card w-50 m-auto">
+	<div class="card-body">
+		<form method="POST">
+			{{ form.hidden_tag() }}
+			<div class="form-group">
+				<label for="exampleFormControlInput1">Nazwa użytkownika:</label>
+				<input type="text" class="form-control" id="exampleFormControlInput1" name = "username">
+			</div>
+			<div class="form-group">
+				<label for="exampleFormControlInput1">Adres email:</label>
+				<input type="email" class="form-control" id="exampleFormControlInput1" name = "email">
+			</div>
+			<div class="form-group">
+				<label for="exampleFormControlInput2">Hasło:</label>
+				<input type="password" class="form-control" id="exampleFormControlInput2" name = "password1">
+			</div>
+			<div class="form-group">
+				<label for="exampleFormControlInput2">Potwierdź hasło:</label>
+				<input type="password" class="form-control" id="exampleFormControlInput2" name = "password2">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary" name="submit">Zarejestruj</button>
+			</div>
+		</form>
+		<hr>
+		<p>Masz już konto?</p>
+		<div class="form-group">
+			<a class="btn btn-secondary" href="{{ url_for('login') }}" role="button">Zaloguj</a>
+		</div>
+	</div>
 </div>
 {% endblock content %}
